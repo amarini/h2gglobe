@@ -844,3 +844,13 @@ void Branch_jet_algoPF3_nSecondaryVertices(TTree* tree) { tree->Branch("jet_algo
 void Branch_jet_algoPF3_secVtxPt(TTree* tree) { tree->Branch("jet_algoPF3_secVtxPt", &jet_algoPF3_secVtxPt, "jet_algoPF3_secVtxPt[jet_algo3_n]/F"); };
 void Branch_jet_algoPF3_secVtx3dL(TTree* tree) { tree->Branch("jet_algoPF3_secVtx3dL", &jet_algoPF3_secVtx3dL, "jet_algoPF3_secVtx3dL[jet_algo3_n]/F"); };
 void Branch_jet_algoPF3_secVtx3deL(TTree* tree) { tree->Branch("jet_algoPF3_secVtx3deL", &jet_algoPF3_secVtx3deL, "jet_algoPF3_secVtx3deL[jet_algo3_n]/F"); };
+void Branch_pho_r9_Ethresh(TTree* tree) { tree->Branch("pho_r9_Ethresh", &pho_r9_Ethresh, "pho_r9_Ethresh[pho_n]/F"); };
+void Branch_pho_sieie_Ethresh(TTree* tree) { tree->Branch("pho_sieie_Ethresh", &pho_sieie_Ethresh, "pho_sieie_Ethresh[pho_n]/F"); };
+void Branch_pho_r9_chi2Thresh(TTree* tree) { tree->Branch("pho_r9_chi2Thresh", &pho_r9_chi2Thresh, "pho_r9_chi2Thresh[pho_n]/F"); };
+void Branch_pho_sieie_chi2Thresh(TTree* tree) { tree->Branch("pho_sieie_chi2Thresh", &pho_sieie_chi2Thresh, "pho_sieie_chi2Thresh[pho_n]/F"); };
+void Branch_pho_pfiso_cleanphoton03(TTree* tree) { tree->Branch("pho_pfiso_cleanphoton03", &pho_pfiso_cleanphoton03, "pho_pfiso_cleanphoton03[pho_n]/F"); };
+void Branch_pho_pfiso_cleanneutral03(TTree* tree) { tree->Branch("pho_pfiso_cleanneutral03", &pho_pfiso_cleanneutral03, "pho_pfiso_cleanneutral03[pho_n]/F"); };
+void Branch_pho_pfiso_cleancharged03(TTree* tree) { tree->Branch("pho_pfiso_cleancharged03", &pho_pfiso_cleancharged03, "pho_pfiso_cleancharged03[pho_n]/F"); };
+void Branch_pho_pfiso_cleanphoton04(TTree* tree) { tree->Branch("pho_pfiso_cleanphoton04", &pho_pfiso_cleanphoton04, "pho_pfiso_cleanphoton04[pho_n]/F"); };
+void Branch_pho_pfiso_cleanneutral04(TTree* tree) { tree->Branch("pho_pfiso_cleanneutral04", &pho_pfiso_cleanneutral04, "pho_pfiso_cleanneutral04[pho_n]/F"); };
+void Branch_pho_pfiso_cleancharged04(TTree* tree) { tree->Branch("pho_pfiso_cleancharged04", &pho_pfiso_cleancharged04, "pho_pfiso_cleancharged04[pho_n]/F"); };

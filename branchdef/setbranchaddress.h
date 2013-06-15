@@ -840,3 +840,13 @@ void SetBranchAddress_jet_algoPF3_nSecondaryVertices(TTree* tree) { tree->SetBra
 void SetBranchAddress_jet_algoPF3_secVtxPt(TTree* tree) { tree->SetBranchAddress("jet_algoPF3_secVtxPt", &jet_algoPF3_secVtxPt, &b_jet_algoPF3_secVtxPt); };
 void SetBranchAddress_jet_algoPF3_secVtx3dL(TTree* tree) { tree->SetBranchAddress("jet_algoPF3_secVtx3dL", &jet_algoPF3_secVtx3dL, &b_jet_algoPF3_secVtx3dL); };
 void SetBranchAddress_jet_algoPF3_secVtx3deL(TTree* tree) { tree->SetBranchAddress("jet_algoPF3_secVtx3deL", &jet_algoPF3_secVtx3deL, &b_jet_algoPF3_secVtx3deL); };
+void SetBranchAddress_pho_r9_Ethresh(TTree* tree) { tree->SetBranchAddress("pho_r9_Ethresh", &pho_r9_Ethresh, &b_pho_r9_Ethresh); };
+void SetBranchAddress_pho_sieie_Ethresh(TTree* tree) { tree->SetBranchAddress("pho_sieie_Ethresh", &pho_sieie_Ethresh, &b_pho_sieie_Ethresh); };
+void SetBranchAddress_pho_r9_chi2Thresh(TTree* tree) { tree->SetBranchAddress("pho_r9_chi2Thresh", &pho_r9_chi2Thresh, &b_pho_r9_chi2Thresh); };
+void SetBranchAddress_pho_sieie_chi2Thresh(TTree* tree) { tree->SetBranchAddress("pho_sieie_chi2Thresh", &pho_sieie_chi2Thresh, &b_pho_sieie_chi2Thresh); };
+void SetBranchAddress_pho_pfiso_cleanphoton03(TTree* tree) { tree->SetBranchAddress("pho_pfiso_cleanphoton03", &pho_pfiso_cleanphoton03, &b_pho_pfiso_cleanphoton03); };
+void SetBranchAddress_pho_pfiso_cleanneutral03(TTree* tree) { tree->SetBranchAddress("pho_pfiso_cleanneutral03", &pho_pfiso_cleanneutral03, &b_pho_pfiso_cleanneutral03); };
+void SetBranchAddress_pho_pfiso_cleancharged03(TTree* tree) { tree->SetBranchAddress("pho_pfiso_cleancharged03", &pho_pfiso_cleancharged03, &b_pho_pfiso_cleancharged03); };
+void SetBranchAddress_pho_pfiso_cleanphoton04(TTree* tree) { tree->SetBranchAddress("pho_pfiso_cleanphoton04", &pho_pfiso_cleanphoton04, &b_pho_pfiso_cleanphoton04); };
+void SetBranchAddress_pho_pfiso_cleanneutral04(TTree* tree) { tree->SetBranchAddress("pho_pfiso_cleanneutral04", &pho_pfiso_cleanneutral04, &b_pho_pfiso_cleanneutral04); };
+void SetBranchAddress_pho_pfiso_cleancharged04(TTree* tree) { tree->SetBranchAddress("pho_pfiso_cleancharged04", &pho_pfiso_cleancharged04, &b_pho_pfiso_cleancharged04); };
