@@ -542,3 +542,14 @@ pho_pfe2nd
 #pho_pfiso_egcharged05
 #pho_pfiso_egcharged06
 
+#Nicolas
+pho_r9_Ethresh
+pho_sieie_Ethresh
+pho_r9_chi2Thresh
+pho_sieie_chi2Thresh
+pho_pfiso_cleanphoton03
+pho_pfiso_cleanneutral03
+pho_pfiso_cleancharged03
+pho_pfiso_cleanphoton04
+pho_pfiso_cleanneutral04
+pho_pfiso_cleancharged04

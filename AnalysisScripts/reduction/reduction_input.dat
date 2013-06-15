@@ -108,3 +108,15 @@ pfcand_n
 pfcand_pdgid
 pfcand_p4
 pfcand_posvtx
+
+#Nicolas
+pho_r9_Ethresh
+pho_sieie_Ethresh
+pho_r9_chi2Thresh
+pho_sieie_chi2Thresh
+pho_pfiso_cleanphoton03
+pho_pfiso_cleanneutral03
+pho_pfiso_cleancharged03
+pho_pfiso_cleanphoton04
+pho_pfiso_cleanneutral04
+pho_pfiso_cleancharged04
