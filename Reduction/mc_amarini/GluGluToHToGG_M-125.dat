@@ -1,0 +1,9 @@
+output=root://eoscms///store/group/phys_higgs/amarini/reduction3/GluGluToHToGG_M-125/GluGluToHToGG_M-125.root
+        
+CaDir=/store/group/phys_higgs/amarini/GluGluToHToGG_M-125/GluGluToHToGG_M-125 typ=-1 
+
+analyzer PhotonAnalysis photonanalysis.dat reweighPt=0
+
+inputBranches reduction_input.dat
+outputBranches reduction_output.dat
+        

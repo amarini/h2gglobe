@@ -1,6 +1,5 @@
 #include "../interface/PhotonAnalysis.h"
 
-
 #include "PhotonReducedInfo.h"
 #include "Sorters.h"
 #include <iostream>

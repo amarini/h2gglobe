@@ -1,0 +1,9 @@
+output=root://eoscms///store/group/phys_higgs/amarini/reduction3/DiPhotonJets/DiPhotonJets.root
+        
+CaDir=/store/group/phys_higgs/amarini/DiPhotonJets_8TeV_madgraph_tarball/DiPhotonJets typ=3 
+
+analyzer PhotonAnalysis photonanalysis.dat reweighPt=0
+
+inputBranches reduction_input.dat
+outputBranches reduction_output.dat
+        

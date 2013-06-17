@@ -1,0 +1,16 @@
+fillOptree=1 
+doSystematics=0
+massMin=60. 
+massMax=1000. 
+doEscaleSyst=0 
+doEscaleSmear=0
+doEresolSyst=0 
+doPhotonIdEffSyst=0 
+doR9Syst=0 
+doVtxEffSyst=0 
+doTriggerEffSyst=0 
+doKFactorSyst=0 
+
+#puMap=
+#puHist=auto
+#puTarget=aux/nPU-Summer12_DD3.190456-200245-29Jun_Prompt.observed.root

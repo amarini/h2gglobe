@@ -1,0 +1,8 @@
+output=root://eoscms///store/group/phys_higgs/amarini/reduction3/GJets/GJets.root
+        
+CaDir=/store/group/phys_higgs/amarini/GJet_Pt40_doubleEMEnriched/GJet_Pt40_doubleEMEnriched_submit3 typ=3 
+
+analyzer PhotonAnalysis photonanalysis.dat reweighPt=0
+inputBranches reduction_input.dat
+outputBranches reduction_output.dat
+        

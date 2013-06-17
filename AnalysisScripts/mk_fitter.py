@@ -138,6 +138,7 @@ if __name__  == "__main__":
 		atCern = True
 	cp="cp -pv"
 	prependToStore=""
+	mkdir="mkdir"
 	if not options.runIC:
 	  if cfg.histdir.startswith("/castor"):
 		mkdir="rfmkdir"
@@ -186,8 +187,8 @@ if __name__  == "__main__":
 	tmp.close()
 	if not os.path.isfile("%s.pevents" % tmpnam) and not options.combine:
 		print "Generating the pevents file...",
-		print "python fitter.py -l %s -i %s --dryRun >& %s.log\n" % (options.label,tmpnam,tmpnam)
-		os.system("python fitter.py -l %s -i %s --dryRun >& %s.log" % (options.label,tmpnam,tmpnam) )
+		print "python fitter.py -l \"%s\" -i %s --dryRun >& %s.log\n" % (options.label,tmpnam,tmpnam)
+		os.system("python fitter.py -l \"%s\" -i %s --dryRun >& %s.log" % (options.label,tmpnam,tmpnam) )
 		print "Done. Check %s.log for errors" % tmpnam
 
 	os.system("%s %s" % ( mkdir, cfg.histdir) )

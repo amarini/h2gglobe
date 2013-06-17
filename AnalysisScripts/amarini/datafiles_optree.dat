@@ -1,0 +1,30 @@
+intL=10200 histfile=/afs/cern.ch/user/a/amarini/work/CMSSW_5_3_9/src/UserCode/HiggsAnalysis/HiggsTo2photons/h2gglobeGit/AnalysisScripts/amarini/OptTree/optree.root output=eventsList.txt
+
+
+#intL=10200 histfile=/store/group/phys_higgs/amarini/optree/optree.root output=eventsList.txt
+
+treevariables amarini/treevariables_optree_amarini.dat
+
+# 
+# Branches to use
+#
+inputBranches minimal_analysis_input.dat
+inputBranches minimal_statanalysis_input.dat
+inputBranches massfactorizedmvaanalysis_input.dat
+#inputBranches minimal_leptmetanalysis_input.dat
+inputBranches amarini/opttree_input_amarini.dat
+
+
+#doEscaleSyst 1
+#doEresolSyst 1
+
+#analyzer MassFactorizedMvaAnalysis photonanalysis.dat analysis_settings.dat massfactorizedmvaanalysis.dat amarini/opttree_amarini.dat 
+#analyzer StatAnalysis photonanalysis.dat analysis_settings.dat amarini/opttree_amarini.dat 
+#analyzer StatAnalysis photonanalysis.dat analysis_settings.dat amarini/opttree_amarini.dat
+
+typ=+4    ind=96 draw=1  Nam=diphojet_8TeV  xsec=75.39 CaDir=/store/group/phys_higgs/amarini/reduction3/DiPhotonJets
+typ=-37   ind=1  draw=1  Nam=ggh_m125_8TeV  xsec=-1 CaDir=/store/group/phys_higgs/amarini/reduction3/GluGluToHToGG_M-125
+typ=+5    ind=97 draw=1  Nam=GJets_8TeV  xsec=8884.0 CaDir=/store/group/phys_higgs/amarini/reduction3/GJets
+
+runZeeValidation=0
+analyzer DumpAnalysis photonanalysis.dat analysis_settings.dat amarini/opttree_amarini.dat requireTwoJets=0

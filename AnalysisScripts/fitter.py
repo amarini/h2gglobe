@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 import ROOT
 from sys import argv
 from python.configProducer import *
@@ -20,6 +21,7 @@ ROOT.gBenchmark.Start("Analysis");
 config_file="datafiles.dat"
 if options.inputDat:
     config_file = options.inputDat
+print "config_file = %s" % (config_file)
 
 ut = ROOT.LoopAll();
 type_run = 0
