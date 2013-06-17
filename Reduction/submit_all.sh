@@ -1,8 +1,8 @@
 #!/bin/bash
 
-./submit_reduction.sh      mc_amarini DiPhotonJets  20
-./submit_reduction.sh      mc_amarini GluGluToHToGG_M-125 10
-./submit_reduction.sh      mc_amarini GJets 30
+#./submit_reduction.sh      mc_amarini DiPhotonJets  20
+#./submit_reduction.sh      mc_amarini GluGluToHToGG_M-125 10
+./submit_reduction.sh      mc_amarini GJets 50
 
 #./submit_reduction.sh     mc_spin2_summer12_s10_withgen Graviton2PMGluGluToHToGG_M-125  5
 #./submit_reduction.sh     mc_spin2_summer12_s10_withgen Graviton2PMGluGluToHToGG_M-126  5 

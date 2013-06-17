@@ -107,6 +107,8 @@ PhotonAnalysis::PhotonAnalysis()  :
     bookDiPhoCutsInVbf=false;
     multiclassVbfSelection=false;
     vbfVsDiphoVbfSelection=false;
+    
+    reweighPt=false;
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -1193,6 +1195,7 @@ void PhotonAnalysis::Init(LoopAll& l)
 	beamspotWidth = (dataIs2011 ? 5.8 : 4.8);
     }
     if (reweighPt) {
+        std::cout << "Going to open: "<<ptreweighfilename <<std::endl;
         ptreweighfile = TFile::Open(ptreweighfilename.c_str());
         ptreweighHistSM = (TH1F*)ptreweighfile->Get(Form("sm%sRat",ptreweightype.c_str()));
         ptreweighHistGG = (TH1F*)ptreweighfile->Get(Form("gg%sRat",ptreweightype.c_str()));
