@@ -2,7 +2,7 @@
 
 source version.sh
 
-queue=1nd
+queue=8nh
 
 if [[ -z $1 ]]; then
     echo "usage:  $0 <directory> [wildcard] [n_jobs]"
