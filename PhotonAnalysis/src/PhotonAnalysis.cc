@@ -113,7 +113,7 @@ PhotonAnalysis::PhotonAnalysis()  :
 // ----------------------------------------------------------------------------------------------------
 PhotonAnalysis::~PhotonAnalysis()
 {
-    if( jetHandler_ != 0 ) delete jetHandler_;
+    //if( jetHandler_ != 0 ) delete jetHandler_; @@@
 }
 
 // ----------------------------------------------------------------------------------------------------

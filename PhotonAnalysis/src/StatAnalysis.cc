@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <stdio.h>
 
-#define PADEBUG 0
+#define PADEBUG 1
 
 using namespace std;
 
@@ -883,7 +883,7 @@ bool StatAnalysis::AnalyseEvent(LoopAll& l, Int_t jentry, float weight, TLorentz
         std::vector<bool> veto_indices;
         veto_indices.clear();
 	    diphoton_id = l.DiphotonCiCSelection(l.phoSUPERTIGHT, l.phoSUPERTIGHT, leadEtCut, subleadEtCut, 4,applyPtoverM, &smeared_pho_energy[0], false, -1, veto_indices, cicCutLevels );
-	    //// diphoton_id = l.DiphotonCiCSelection(l.phoNOCUTS, l.phoNOCUTS, leadEtCut, subleadEtCut, 4,applyPtoverM, &smeared_pho_energy[0] );
+	     /////diphoton_id = l.DiphotonCiCSelection(l.phoNOCUTS, l.phoNOCUTS, leadEtCut, subleadEtCut, 4,applyPtoverM, &smeared_pho_energy[0] );
 
 	    // N-1 plots
 	    if( ! isSyst ) {

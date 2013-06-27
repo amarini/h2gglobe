@@ -240,7 +240,7 @@ void LoopAll::MergeContainers(){
       //delete dataExtra;
     }
 
-    delete work;
+    delete work; 
     //std::cout << "Finished Combining File - " << (*it) << std::endl;
 
     (*it_file)->Close();
@@ -354,7 +354,7 @@ void LoopAll::LoopAndFillHistos(TString treename) {
       
       Init(typerun, *it_tree);
     }
-
+	
     if( *it_tree != 0 && (*it_tree)->GetEntries() != 0 ) {
 	Loop(i);
     }
@@ -640,7 +640,7 @@ void LoopAll::Loop(Int_t a) {
   std::vector<std::string> *parameters = new std::vector<std::string>;
   std::string *job_maker = new std::string;
   Int_t red_events[20];
-  
+ 
   TreesPar[a]->SetBranchAddress("tot_events", &tot_events);
   TreesPar[a]->SetBranchAddress("sel_events", &sel_events);
   TreesPar[a]->SetBranchAddress("type", &type);
@@ -687,7 +687,8 @@ void LoopAll::Loop(Int_t a) {
     if(LDEBUG) 
       cout<<"call LoadTree"<<endl;
     
-    Int_t ientry = LoadTree(jentry);
+    Int_t ientry ;
+	ientry = LoadTree(jentry);
   
     if (ientry < 0) 
       break;
@@ -700,7 +701,7 @@ void LoopAll::Loop(Int_t a) {
 
     if(LDEBUG) 
       cout<<"Call FillandReduce "<<endl;
-      
+     
     hasoutputfile = this->FillAndReduce(jentry);
     if(LDEBUG) 
       cout<<"Called FillandReduce "<<endl;
@@ -1052,9 +1053,11 @@ int LoopAll::FillAndReduce(int jentry) {
   //
   // read all inputs 
   //
+  int status =0;
   if(!makeDummyTrees){
-    GetEntry(inputBranches, jentry);
+    status=GetEntry(inputBranches, jentry);
   }
+	if(status <0) return -1;
 
   //b_run->GetEntry(jentry);
   //b_lumis->GetEntry(jentry);
@@ -1122,7 +1125,9 @@ int LoopAll::FillAndReduce(int jentry) {
     }
     // final analysis
     for (size_t i=0; i<analyses.size(); i++) {
-      if (analyses[i]->Analysis(*this, jentry)) { 
+	int value;
+	value = analyses[i]->Analysis(*this, jentry);
+      if (value) { 
       	FillTreeContainer();
       }
     }
@@ -1186,14 +1191,18 @@ void LoopAll::Branches(std::list<std::string> & names) {
 }
 
 // ------------------------------------------------------------------------------------
-void LoopAll::GetEntry(std::set<TBranch *> & branches, int jentry)
+int LoopAll::GetEntry(std::set<TBranch *> & branches, int jentry)
 {
-    for(std::set<TBranch *>::iterator it=branches.begin(); it!=branches.end(); ++it ) {
+    bool fail=0;
+    for(std::set<TBranch *>::iterator it=branches.begin(); it!=branches.end() && !(fail); ++it ) {
 	if(LDEBUG){
 	    std::cout<<"getting entry:  "<<(*it)->GetName()<<std::endl;
 	}
-    if( (*it)->GetReadEntry() != jentry ) {  (*it)->GetEntry(jentry); }
+    if( (*it)->GetReadEntry() != jentry ) { int status=(*it)->GetEntry(jentry); if(status <0) fail=true;}
   }
+	if(fail)cout<<"Failure I/O on Entry"<<jentry<<endl;
+	if(fail)return -1;
+	return 0;
 }
 // ------------------------------------------------------------------------------------
 void LoopAll::BookTreeBranch(std::string name, int type, std::string dirName){

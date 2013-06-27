@@ -520,9 +520,14 @@ void MassFactorizedMvaAnalysis::Init(LoopAll& l)
     // Initialize all MVA ---------------------------------------------------//
     l.SetAllMVA();
     // UCSD
+cout<<" ========================= UCSD MVA ======================="<<std::endl;
+cout<<" ---------> Going to load: photonLevelMvaUCSD: "<< photonLevelMvaUCSD<<std::endl;
+cout<<" ---------> Going to load: eventLevelMvaUCSD: "<< eventLevelMvaUCSD<<std::endl;
     l.tmvaReaderID_UCSD->BookMVA("Gradient"      ,photonLevelMvaUCSD.c_str()  );
     l.tmvaReader_dipho_UCSD->BookMVA("Gradient"  ,eventLevelMvaUCSD.c_str()   );
     // New ID MVA
+cout<<" ---------> NewIdMVA: photonLevelNewIDMVA_EB:"<< photonLevelNewIDMVA_EB<<std::endl;
+cout<<" ---------> NewIdMVA: photonLevelNewIDMVA_EE:"<< photonLevelNewIDMVA_EE<<std::endl;
     if( photonLevelNewIDMVA_EB != "" && photonLevelNewIDMVA_EE != "" ) {
     l.tmvaReaderID_Single_Barrel->BookMVA("AdaBoost",photonLevelNewIDMVA_EB.c_str());
     l.tmvaReaderID_Single_Endcap->BookMVA("AdaBoost",photonLevelNewIDMVA_EE.c_str());
@@ -530,6 +535,7 @@ void MassFactorizedMvaAnalysis::Init(LoopAll& l)
     assert( dataIs2011 );
     }
     // MIT 
+cout<<" ========================= MIT MVA ======================="<<std::endl;
     if( photonLevelMvaMIT_EB != "" && photonLevelMvaMIT_EE != "" ) {
     l.tmvaReaderID_MIT_Barrel->BookMVA("AdaBoost",photonLevelMvaMIT_EB.c_str());
     l.tmvaReaderID_MIT_Endcap->BookMVA("AdaBoost",photonLevelMvaMIT_EE.c_str());

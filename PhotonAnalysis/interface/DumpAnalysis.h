@@ -26,19 +26,19 @@ public:
     float weight;
     float sampleweight;
     
-    //int   jet1, jet2, jet3;
+    int   jet1, jet2, jet3;
     float diphomva;
     float pho1pt;
     float pho2pt;
     float diphopt;
     float diphoM;
     float diphoEta;
-   // float dijetEta;
-   // float jet1isMatched,jet2isMatched;
-   // float jet1genPt,jet2genPt;
-   // float jet1genDr,jet2genDr;
-   // //float jet1Pt, jet2Pt, jet1Eta, jet2Eta, zepp, mj1j2, dphi, dphiJJ, dphiJJ2, deltaEta3;
-   // bool  jet1PileupID,jet2PileupID ;
+    float dijetEta;
+    float jet1isMatched,jet2isMatched;
+    float jet1genPt,jet2genPt;
+    float jet1genDr,jet2genDr;
+    float jet1Pt, jet2Pt, jet1Eta, jet2Eta, zepp, mj1j2, dphi, dphiJJ, dphiJJ2, deltaEta3;
+    bool  jet1PileupID,jet2PileupID ;
     bool  isSignal;
     int   mctype;
 
@@ -78,6 +78,7 @@ public:
     float pho1sceta; float pho2sceta;
     float pho1hoe; float pho2hoe;
     float rho;
+    float pho1ESEffSigmaRR; float pho2ESEffSigmaRR;
     //Nikolas variables
     float pho1r9_Ethresh; float pho2r9_Ethresh;
     float pho1sieie_Ethresh; float pho2sieie_Ethresh;

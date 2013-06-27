@@ -41,4 +41,6 @@ ls
 
 eval $job $@
 
+rsync -avP ./*.root lxplus411.cern.ch:/tmp/amarini/
+
 source cleanup.sh

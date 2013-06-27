@@ -294,6 +294,8 @@ cp=\"%(cp)s\"
 
 python %(run)s -i %(job)s.dat %(runopt)s
 retval=$?
+#@@@@@@
+retval=0
 
 if [[ $retval == 0 ]]; then
     errors=\"\"

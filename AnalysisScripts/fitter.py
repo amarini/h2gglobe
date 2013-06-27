@@ -72,4 +72,5 @@ if not options.dryRun:
 else:
   cfg.print_members()
 
+print "DONE"
 ROOT.gROOT.Reset()

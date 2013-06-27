@@ -214,6 +214,7 @@ class LoopAll {
   template <class T> void BookExternalTreeBranch(const char * name, T* addr, const char * type, std::string dirName) {
 	  for(unsigned int ind=0; ind<treeContainer[dirName].size(); ind++) {
 //		  treeContainer[dirName][ind].AddExternalBranch<T>(name,addr,type);
+	  cout<<"++++++++++++++++++++++++++++++ ERROR+++++++++++++++++++++++++"<<endl;
 	  }
   }
 
@@ -284,7 +285,7 @@ class LoopAll {
   void GetBranches(std::map<std::string,int> & names, std::set<TBranch *> & branches);
   void SetBranchAddresses(std::map<std::string,int> & names);
   void Branches(std::list<std::string> & names);
-  void GetEntry(std::set<TBranch *> & branches, int jentry);
+  int  GetEntry(std::set<TBranch *> & branches, int jentry);
 
   bool CheckLumiSelection( int run, int lumi );
   bool CheckEventList( int run, int lumi, int event );

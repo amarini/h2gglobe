@@ -27,4 +27,4 @@ typ=-37   ind=1  draw=1  Nam=ggh_m125_8TeV  xsec=-1 CaDir=/store/group/phys_higg
 typ=+5    ind=97 draw=1  Nam=GJets_8TeV  xsec=8884.0 CaDir=/store/group/phys_higgs/amarini/reduction3/GJets
 
 runZeeValidation=0
-analyzer DumpAnalysis photonanalysis.dat analysis_settings.dat amarini/opttree_amarini.dat requireTwoJets=0
+analyzer DumpAnalysis photonanalysis.dat analysis_settings.dat jetanalysis/vbfanalysis.dat amarini/opttree_amarini.dat requireTwoJets=0 amarini/mvas.dat dumpFlatTree=1
