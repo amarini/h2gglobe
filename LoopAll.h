@@ -213,7 +213,7 @@ class LoopAll {
 
   template <class T> void BookExternalTreeBranch(const char * name, T* addr, const char * type, std::string dirName) {
 	  for(unsigned int ind=0; ind<treeContainer[dirName].size(); ind++) {
-//		  treeContainer[dirName][ind].AddExternalBranch<T>(name,addr,type);
+		  treeContainer[dirName][ind].AddExternalBranch<T>(name,addr,type);
 	  }
   }
 
