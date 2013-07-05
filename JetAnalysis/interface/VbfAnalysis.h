@@ -14,6 +14,9 @@
 #include <iostream>
 #include <fstream>
 #include "math.h"
+//QG Discrimination
+#include "QuarkGluonTagger/EightTeV/interface/QGLikelihoodCalculator.h"
+#include "QuarkGluonTagger/EightTeV/interface/Bins.h"
 
 class TreeVariables {
 
@@ -39,6 +42,7 @@ public:
     float jet1genDr,jet2genDr;
     float jet1Pt, jet2Pt, jet1Eta, jet2Eta, zepp, mj1j2, dphi, dphiJJ, dphiJJ2, deltaEta3;
     bool  jet1PileupID,jet2PileupID ;
+    float jet1QG,jet2QG;
     bool  isSignal;
     int   mctype;
 
@@ -102,6 +106,7 @@ private:
     TTree * flatTree_;
     int _nVertices;
     TreeVariables tree_, default_;
+    QGLikelihoodCalculator *qgl;
 
 };
 

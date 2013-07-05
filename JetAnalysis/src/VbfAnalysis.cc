@@ -9,6 +9,10 @@
 
 #include "CMGTools/External/interface/PileupJetIdentifier.h"
 
+//QG Discrimination
+#include "QuarkGluonTagger/EightTeV/src/QGLikelihoodCalculator.cc"
+#include "QuarkGluonTagger/EightTeV/src/Bins.cc"
+
 #define PADEBUG 0 
 
 using namespace std;
@@ -42,6 +46,8 @@ TreeVariables::TreeVariables() :
     deltaEta3(999),	
     jet1PileupID(0),	
     jet2PileupID(0),	
+    jet1QG(-1),
+    jet2QG(-2),
     isSignal(false),	
     mctype(0),		
     diphomva(-999),	
@@ -81,6 +87,7 @@ VbfAnalysis::VbfAnalysis()
     
     flatTree_ = 0;
     outputFile_ = 0;
+    qgl=new QGLikelihoodCalculator("QuarkGluonTagger/EightTeV/data/");
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -160,6 +167,8 @@ void VbfAnalysis::Init(LoopAll& l)
 	l.BookExternalTreeBranch( "deltaEta3",     &tree_.deltaEta3, "vbfAnalysis" );     
 	l.BookExternalTreeBranch( "jet1PileupID",  &tree_.jet1PileupID, "vbfAnalysis" );  
 	l.BookExternalTreeBranch( "jet2PileupID",  &tree_.jet2PileupID, "vbfAnalysis" );  
+	l.BookExternalTreeBranch( "jet1QG",  &tree_.jet1QG, "vbfAnalysis" );  
+	l.BookExternalTreeBranch( "jet2QG",  &tree_.jet2QG, "vbfAnalysis" );  
 	l.BookExternalTreeBranch( "isSignal",      &tree_.isSignal, "vbfAnalysis" );      
 	l.BookExternalTreeBranch( "mctype",        &tree_.mctype, "vbfAnalysis" );        
 	l.BookExternalTreeBranch( "diphomva",      &tree_.diphomva, "vbfAnalysis" );      
@@ -389,6 +398,7 @@ bool VbfAnalysis::AnalyseEvent(LoopAll& l, Int_t jentry, float weight, TLorentzV
 		tree_.jet1PileupID  = PileupJetIdentifier::passJetId(l.jet_algoPF1_simple_wp_level[ijet1], PileupJetIdentifier::kLoose);
 		tree_.jet1Pt        = jet1->Pt();
 		tree_.jet1Eta       = jet1->Eta();
+        tree_.jet1QG        = qgl->computeQGLikelihood2012(jet1->Pt(),jet1->Eta(),l.rho_algo1,l.jet_algoPF1_nCharged_QC[ijet1]+l.jet_algoPF1_nNeutrals_ptCut[ijet1],l.jet_algoPF1_ptD_QC[ijet1],l.jet_algoPF1_axis2_QC[ijet1]);
 	    }
 	    if( ijet2 >= 0 ) {
 		tree_.jet2isMatched = l.jet_algoPF1_genMatched[ijet2];
@@ -397,6 +407,7 @@ bool VbfAnalysis::AnalyseEvent(LoopAll& l, Int_t jentry, float weight, TLorentzV
 		tree_.jet2PileupID  = PileupJetIdentifier::passJetId(l.jet_algoPF1_simple_wp_level[ijet2], PileupJetIdentifier::kLoose);
 		tree_.jet2Pt        = jet2->Pt();
 		tree_.jet2Eta       = jet2->Eta();
+        tree_.jet2QG        = qgl->computeQGLikelihood2012(jet2->Pt(),jet2->Eta(),l.rho_algo1,l.jet_algoPF1_nCharged_QC[ijet2]+l.jet_algoPF1_nNeutrals_ptCut[ijet2],l.jet_algoPF1_ptD_QC[ijet2],l.jet_algoPF1_axis2_QC[ijet2]);
 	    }
 	    
 	    if( ijet1 >= 0 && ijet2 >= 0 ) {
