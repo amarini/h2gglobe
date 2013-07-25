@@ -7,6 +7,7 @@
 base_storedir="./datastore"
 ## storeremote="/castor/cern.ch/user/c/cmshgg/reduced"
 storeremote="/store/group/phys_higgs/cmshgg/reduced"
+#storeremote="/store/user/amarini/reduced"
 
 [[ -f $(whoami)_setup.sh ]] && . $(whoami)_setup.sh
 
