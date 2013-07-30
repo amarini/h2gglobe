@@ -1,9 +1,5 @@
 #intL=19620. histfile=/store/group/phys_higgs/cmshgg/analyzed/Moriond2013_rereco/MassFacMVA/v1/%(label)s/CMS-HGG.root output=eventsList.txt
-<<<<<<< HEAD
-intL=19620. histfile=/store/user/amarini/Moriond2013_rereco/MassFacMVA/v2/%(label)s/CMS-HGG.root output=eventsList.txt
-=======
 intL=19620. histfile=/store/user/amarini/Moriond2013_rereco/MassFacMVA/v1/%(label)s/CMS-HGG.root output=eventsList.txt
->>>>>>> 4bd7f74eeb8cc71f58c5a87895e1cb15b25d6dd7
 
 #
 # Data
