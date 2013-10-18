@@ -42,6 +42,12 @@ def makeLabels():
 		"Muon-tagged class",
 		"Electron-tagged class",
 		"MET-tagged class",
+		"boh_10",
+		"boh_11",
+		"boh_12",
+		"boh_13",
+		"boh_14",
+		"boh_15",
     )
     aDict['spin'] = (
         "#splitline{max(|#eta|) < 1.44, min(R_{9}) > 0.94}{|cos(#theta*)| < 0.2}",
@@ -150,6 +156,8 @@ def main(o):
     ROOT.gROOT.SetBatch(1)
     ROOT.gStyle.SetOptStat(0)
     ROOT.gErrorIgnoreLevel = ROOT.kWarning
+	
+    ROOT.gSystem.Load("$CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisCombinedLimit.so");
 
     outf = ROOT.TFile.Open('BkgPlotCanvs.root', 'RECREATE')
 
