@@ -3,7 +3,7 @@ ROOFIT_BASE=$(ROOFITSYS)
 
 CXXFLAGS += $(shell $$ROOTSYS/bin/root-config --cflags) -I$(ROOFIT_BASE)/include
 LDLIBS += $(shell $$ROOTSYS/bin/root-config --glibs)
-LDFLAGS += -L $(ROOFIT_BASE)/lib -lRooFitCore -lRooFit -lTMVA -lCore
+LDFLAGS += -L $(ROOFIT_BASE)/lib -lRooFitCore -lRooFit -lTMVA -lCore -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH) -lHiggsAnalysisCombinedLimit
 
 # for building the shared libraries
 CXXFLAGS += -Wall -fPIC -g
