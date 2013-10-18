@@ -1,7 +1,8 @@
 # configuration for each process and cat
 # infile=/afs/cern.ch/user/m/mkenzie/workPoint/MORIONDreview/h2gglobe/SimultaneousSignalFitting/CMS-HGG_hcp.root
 # infile=root://eoscms//eos/cms/store/group/phys_higgs/cmshgg/analyzed/Moriond2013/cutbased/Moriond2013_CutBased_preapprovalv3_sig/CMS-HGG_interpolated_2012ABCD.root
-infile=../AnalysisScripts/MK_signal_test/CMS-HGG_sig.root
+#infile=../AnalysisScripts/MK_signal_test/CMS-HGG_sig.root
+infile=../CMS-HGG.root
 
 # outfilename proc cat nGaussians dmOrder sigOrder fracOrder
 CMS-HGG_ggh_cat0.root ggh 0 3 1 1 1
@@ -13,6 +14,12 @@ CMS-HGG_ggh_cat5.root ggh 5 3 1 1 1
 CMS-HGG_ggh_cat6.root ggh 6 1 1 1 1
 CMS-HGG_ggh_cat7.root ggh 7 1 1 1 1
 CMS-HGG_ggh_cat8.root ggh 8 2 1 1 1
+CMS-HGG_ggh_cat9.root ggh 9 2 1 1 1
+CMS-HGG_ggh_cat10.root ggh 10 2 1 1 1
+CMS-HGG_ggh_cat11.root ggh 11 2 1 1 1
+CMS-HGG_ggh_cat12.root ggh 12 2 1 1 1
+CMS-HGG_ggh_cat13.root ggh 13 2 1 1 1
+CMS-HGG_ggh_cat14.root ggh 14 2 1 1 1
 
 CMS-HGG_vbf_cat0.root vbf 0 3 1 1 1
 CMS-HGG_vbf_cat1.root vbf 1 3 1 1 1
@@ -23,6 +30,12 @@ CMS-HGG_vbf_cat5.root vbf 5 3 1 1 1
 CMS-HGG_vbf_cat6.root vbf 6 1 1 1 1
 CMS-HGG_vbf_cat7.root vbf 7 1 1 1 1
 CMS-HGG_vbf_cat8.root vbf 8 2 1 1 1
+CMS-HGG_vbf_cat9.root vbf 9 2 1 1 1
+CMS-HGG_vbf_cat10.root vbf 10 2 1 1 1
+CMS-HGG_vbf_cat11.root vbf 11 2 1 1 1
+CMS-HGG_vbf_cat12.root vbf 12 2 1 1 1
+CMS-HGG_vbf_cat13.root vbf 13 2 1 1 1
+CMS-HGG_vbf_cat14.root vbf 14 2 1 1 1
 
 CMS-HGG_wh_cat0.root wh 0 3 1 1 1
 CMS-HGG_wh_cat1.root wh 1 5 1 1 1
@@ -33,6 +46,12 @@ CMS-HGG_wh_cat5.root wh 5 1 1 1 1
 CMS-HGG_wh_cat6.root wh 6 3 1 1 1
 CMS-HGG_wh_cat7.root wh 7 3 1 1 1
 CMS-HGG_wh_cat8.root wh 8 3 1 1 1
+CMS-HGG_wh_cat9.root wh 9 2 1 1 1
+CMS-HGG_wh_cat10.root wh 10 2 1 1 1
+CMS-HGG_wh_cat11.root wh 11 2 1 1 1
+CMS-HGG_wh_cat12.root wh 12 2 1 1 1
+CMS-HGG_wh_cat13.root wh 13 2 1 1 1
+CMS-HGG_wh_cat14.root wh 14 2 1 1 1
 
 CMS-HGG_zh_cat0.root zh 0 3 1 1 1
 CMS-HGG_zh_cat1.root zh 1 5 1 1 1
@@ -43,6 +62,12 @@ CMS-HGG_zh_cat5.root zh 5 1 1 1 1
 CMS-HGG_zh_cat6.root zh 6 3 1 1 1
 CMS-HGG_zh_cat7.root zh 7 3 1 1 1
 CMS-HGG_zh_cat8.root zh 8 3 1 1 1
+CMS-HGG_zh_cat9.root zh 9 2 1 1 1
+CMS-HGG_zh_cat10.root zh 10 2 1 1 1
+CMS-HGG_zh_cat11.root zh 11 2 1 1 1
+CMS-HGG_zh_cat12.root zh 12 2 1 1 1
+CMS-HGG_zh_cat13.root zh 13 2 1 1 1
+CMS-HGG_zh_cat14.root zh 14 2 1 1 1
 
 CMS-HGG_tth_cat0.root tth 0 4 1 1 1
 CMS-HGG_tth_cat1.root tth 1 5 1 1 1
@@ -53,3 +78,9 @@ CMS-HGG_tth_cat5.root tth 5 2 1 1 1
 CMS-HGG_tth_cat6.root tth 6 5 1 1 1
 CMS-HGG_tth_cat7.root tth 7 4 1 1 1
 CMS-HGG_tth_cat8.root tth 8 3 1 1 1
+CMS-HGG_tth_cat9.root tth 9 2 1 1 1
+CMS-HGG_tth_cat10.root tth 10 2 1 1 1
+CMS-HGG_tth_cat11.root tth 11 2 1 1 1
+CMS-HGG_tth_cat12.root tth 12 2 1 1 1
+CMS-HGG_tth_cat13.root tth 13 2 1 1 1
+CMS-HGG_tth_cat14.root tth 14 2 1 1 1
