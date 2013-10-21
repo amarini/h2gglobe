@@ -8,6 +8,7 @@
  python remove_cat.py -f tmp6_hgg.txt  -o tmp7_hgg.txt -c cat8 -p ggH
  python remove_cat.py -f tmp7_hgg.txt  -o tmp8_hgg.txt -c cat9 -p ggH
  python remove_cat.py -f tmp8_hgg.txt  -o tmp9_hgg.txt -c cat8 -p qqH
- python remove_cat.py -f tmp9_hgg.txt  -o tmp10_hgg.txt -c cat8 -p ttH
+ python remove_cat.py -f tmp9_hgg.txt  -o tmp10_hgg.txt -c cat6 -p ttH
  python remove_cat.py -f tmp10_hgg.txt  -o tmp11_hgg.txt -c cat11 -p ZH
- python remove_cat.py -f tmp11_hgg.txt  -o tmp12_hgg.txt -c cat11 -p WH
+ python remove_cat.py -f tmp11_hgg.txt  -o tmp12_hgg.txt -c cat12 -p ggH
+ python remove_cat.py -f tmp12_hgg.txt  -o hgg_card_massfacmva_legacy_binned_v2.txt -c cat11 -p WH
