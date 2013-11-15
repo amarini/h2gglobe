@@ -2065,6 +2065,7 @@ void StatAnalysis::fillOpTree(LoopAll& l, const TLorentzVector & lead_p4, const 
     l.FillTree("njets10", njets10);
     l.FillTree("njets15", njets15);
     l.FillTree("njets20", njets20);
+    l.FillTree("bdt_combined",myVBFcombined) ;
 
 
     if (vbfIjet1 != -1 && vbfIjet2 !=-1) {
