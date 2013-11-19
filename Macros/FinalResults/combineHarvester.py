@@ -274,7 +274,7 @@ def configure(config_line):
 	for option in config_line.split():
 		if option.startswith('outDir='): opts.outDir = option.split('=')[1]
 		if option.startswith('method='): opts.method = option.split('=')[1]
-		if option.startswith('expected='): opts.expected = int(option.split('=')[1])
+		if option.startswith('expected='): opts.expected = bool(option.split('=')[1])
 		if option.startswith('expectSignal='): opts.expectSignal = float(option.split('=')[1])
 		if option.startswith('expectSignalMass='): opts.expectSignalMass = float(option.split('=')[1])
 		if option.startswith('mhLow='): opts.mhLow = float(option.split('=')[1])

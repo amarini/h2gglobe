@@ -98,10 +98,11 @@ printLine = "Data:      "
 Sum = 0
 for i in cats:
   h = f.Get("th1f_data_mass_cat%d"%i)
-  print "%d   %4.0f    %4.0f" % (i, h.Integral(1,160), h.Integral(21,100) )
+  print "%d   %4.0f    %4.0f    %4.0f" % (i, h.Integral(1,160), h.Integral(21,100), h.Integral( h.FindBin(110) , h.FindBin(180) -1) )
   Sum+=h.Integral()
   printLine+="%3.0f"%(h.Integral())+" "
 printLine+="tot=%d"%Sum
+
 print printLine
 
 
@@ -119,6 +120,8 @@ dnfunc = ROOT.TF1("dnfunc",fitstring,109.75,140.25)
 
 for point,M in enumerate(Masses):
 	printLine = "Signal M%3.1f: "%M
+	#if int(M) != M: continue
+	#if int(M)%5!=0: continue;
 	Sum = 0
 	for i in cats:
 		if int(M)==M:

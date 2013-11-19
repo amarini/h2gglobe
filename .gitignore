@@ -10,4 +10,8 @@ __init__*
 LoopAllDict.cc
 LoopAllDict.h
 TmpLinkDef.h
-
+*.pdf
+*.png
+*.root
+*.log
+AutoDict*

@@ -25,10 +25,8 @@ def read1D(files, x, igr, title, xtitle):
     return gr
 
 def main(options, args):
-
     from rootglobestyle import setTDRStyle
     setTDRStyle()
-    
     titles = {
         "RV" : "#mu_{VBF+VH}^{#gamma #gamma}", ## "( #sigma_{VH} + #sigma_{qqH} ) * BR_{#gamma #gamma} / SM",
         "MH" : "m_{H} (GeV)"## "( #sigma_{VH} + #sigma_{qqH} ) * BR_{#gamma #gamma} / SM",
@@ -199,8 +197,10 @@ if __name__ == "__main__":
     
     ## sys.argv.append("-b")
     import ROOT
+    ROOT.gROOT.SetBatch() 
 
-    ROOT.gROOT.LoadMacro("%s/GraphToTF1.C+" % os.path.dirname(sys.argv[0]) )
+    #ROOT.gROOT.LoadMacro("%s/GraphToTF1.C+" % os.path.dirname(sys.argv[0]) )
+    ROOT.gROOT.LoadMacro("./GraphToTF1.C++" )
     
     objs = main( options, args )
 
