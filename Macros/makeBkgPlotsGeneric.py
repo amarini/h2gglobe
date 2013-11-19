@@ -32,16 +32,34 @@ def makeLabels():
         "One or more photons in endcap, min(R_{9}) < 0.94",
 		"Dijet-tagged",
     )
+    aDict['massfact7TeV'] = ( 
+		"Untagged 0",
+		"Untagged 1",
+		"Untagged 2",
+		"Untagged 3",
+		"Dijet Tag 0",
+		"Dijet Tag 1",
+		"VH Lepton Tight",
+		"VH Lepton Loose",
+		"VH MET Tag",
+		"ttH  Tag",
+		"VH Hadronic Tag"
+    )
     aDict['massfact'] = ( 
-		"BDT_{#gamma#gamma} >= 0.91",
-		"0.79  <= BDT_{#gamma#gamma} < 0.91",
-		"0.49 <= BDT_{#gamma#gamma} < 0.79",
-		"-0.05  <= BDT_{#gamma#gamma} < 0.49",
-        "Dijet-tagged class BDT_{VBF} >= 0.985",
-        "Dijet-tagged class 0.93 <= BDT_{VBF} < 0.985",
-		"Muon-tagged class",
-		"Electron-tagged class",
-		"MET-tagged class",
+		"Untagged 0",
+		"Untagged 1",
+		"Untagged 2",
+		"Untagged 3",
+		"Untagged 4",
+		"Dijet Tag 0",
+		"Dijet Tag 1",
+		"Dijet Tag 2",
+		"VH Lepton Tight",
+		"VH Lepton Loose",
+		"VH MET Tag",
+		"ttH Leptonic Tag",
+		"ttH Hadronic Tag",
+		"VH Hadronic Tag"
     )
     aDict['spin'] = (
         "#splitline{max(|#eta|) < 1.44, min(R_{9}) > 0.94}{|cos(#theta*)| < 0.2}",
@@ -151,6 +169,7 @@ def main(o):
     ROOT.gStyle.SetOptStat(0)
     ROOT.gErrorIgnoreLevel = ROOT.kWarning
 
+    ROOT.gSystem.Load("$CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisCombinedLimit.so");
     outf = ROOT.TFile.Open('BkgPlotCanvs.root', 'RECREATE')
 
     typ = ROOT.RooFit.FATAL

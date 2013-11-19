@@ -42,6 +42,13 @@ dijetCats = [5,6,7]
 muonCat = [8,9]
 eleCat = [8,9]
 metCat = [10]
+if options.is2011:
+	incCats= [0,1,2,3]
+	dijetCats = [4,5]
+	muonCat = [6,7]
+	eleCat = [6,7]
+	metCat = [8]
+	
 # FOR CIC:
 if options.isCutBased:
 	incCats = [0,1,2,3]
