@@ -3210,10 +3210,15 @@ float LoopAll::DiphotonMITPreSelectionPerDipho(const char * type, int idipho, Fl
     
     std::vector<std::vector<bool> > ph_passcut;
     if (!kinonly) {
+	int ncategories=4;
         if( version >= 13 ) {
             if (!( PhotonMITPreSelection(lead, ivtx, pho_energy_array ) && PhotonMITPreSelection(sublead, ivtx,  pho_energy_array ))) return -99; 
+	    if ( PhotonCiCSelectionLevel(lead, ivtx, ph_passcut, ncategories, 0, pho_energy_array ) < 4 ) return -99;
+	    if ( PhotonCiCSelectionLevel(sublead, ivtx, ph_passcut, ncategories, 1, pho_energy_array ) < 4 ) return -99;
         } else {
             if (!( PhotonMITPreSelection2011(lead, ivtx, pho_energy_array ) && PhotonMITPreSelection2011(sublead, ivtx,  pho_energy_array ))) return -99; 
+	    if ( PhotonCiCSelectionLevel(lead, ivtx, ph_passcut, ncategories, 0, pho_energy_array ) < 4 ) return -99;
+	    if( PhotonCiCSelectionLevel(sublead, ivtx, ph_passcut, ncategories, 1, pho_energy_array ) < 4 ) return -99;
         }
     }
 
