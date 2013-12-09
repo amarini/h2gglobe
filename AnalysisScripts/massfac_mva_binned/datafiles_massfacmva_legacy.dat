@@ -134,6 +134,7 @@ inputBranches minimal_analysis_input.dat
 inputBranches massfactorizedmvaanalysis_input.dat
 inputBranches minimal_leptmetanalysis_input.dat
 inputBranches TTVH_analysis_input.dat
+inputBranches minimal_statanalysis_input.dat
 
 treevariables massfac_mva_binned/fullmvatrees.dat treevariables_optree.dat
 
