@@ -1,0 +1,171 @@
+#include "UnfoldAnalysis/interface/UnfoldAnalysis.h"
+
+
+// -------------------------------------------------------------------------------------------
+void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins) 
+{
+
+    UNFOLD_INHERITANCE::bookSignalModel(l,nDataBins);
+
+   //check if you have a simple map between bins and categories
+   if( nCategories_%nVarCategories )
+	{
+	cout<<"nCategories %% nVarCategories !=0 ["<<nCategories_<<","<<nVarCategories<<"]"<<endl;
+	cout<<"      *** mapping not supported ***"<<endl;
+	}
+   assert( nCategories_%nVarCategories == 0 );
+
+    for(size_t isig=0; isig<sigPointsToBook.size(); ++isig) {
+        int sig = sigPointsToBook[isig];
+	if (doUnfoldHisto) // here: don't care about sigProc
+		{
+		for(int iCat=0;iCat<nCategories_/nVarCategories;iCat++)
+		for(int iBin=0;iBin<= nVarCategories;iBin++)
+			{
+			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_Cat%d_mass_m%d_rv",iBin,iCat,sig),nDataBins);
+			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_Cat%d_mass_m%d_wv",iBin,iCat,sig),nDataBins);
+			}
+		}
+	}
+}
+
+
+// -------------------------------------------------------------------------------------------
+void UnfoldAnalysis::FillRooContainer(LoopAll& l, int cur_type, float mass, float diphotonMVA,
+        int category, float weight, bool isCorrectVertex, int diphoton_id)
+{
+
+UNFOLD_INHERITANCE::FillRooContainer(l,cur_type,mass,diphotonMVA,category,weight,isCorrectVertex,diphoton_id);
+
+//category w/ observables bins folded in
+int sub_cat=category/nVarCategories;
+int bin=-1;
+
+//figure out gen bin: gen selection
+
+if (doUnfoldHisto)
+	{
+	bin= computeGenBin(l,cur_type)	;
+	if(isCorrectVertex)l.rooContainer->InputDataPoint(Form("sig_Bin%d_Cat%d_mass_m%d_rv",bin,sub_cat,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
+	else l.rooContainer->InputDataPoint(Form("sig_Bin%d_Cat%d_mass_m%d_wv",bin,sub_cat,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
+	}//end doUnfoldHisto
+
+}
+
+// -------------------------------------------------------------------------------------------
+void UnfoldAnalysis::FillRooContainerSyst(LoopAll& l, const std::string &name, int cur_type,
+        std::vector<double> & mass_errors, std::vector<double> & mva_errors,
+        std::vector<int> & categories, std::vector<double> & weights, int diphoton_id)
+{
+UNFOLD_INHERITANCE::FillRooContainerSyst(l,name,cur_type,mass_errors,mva_errors,categories,weights,diphoton_id);
+//should I add something here? 
+}
+
+int UnfoldAnalysis::computeGenBin(LoopAll &l,int cur_type){
+
+int is_bkg=-1;
+
+if(cur_type>=0) return is_bkg; //no gen for bkg & data
+
+//loop over the gen particles
+map<float,int,std::greater<float> > phoHiggs;
+
+for(int igp=0;igp< l.gp_n ;igp++)
+   {
+   if ( l.gp_status[igp] != 1) continue;
+   if ( l.gp_pdgid[igp] != 22 ) continue;
+   //find a 25 in the full mother chain
+   bool isHiggsSon=false;
+   for( int mother=l.gp_mother[igp]; mother>=0 && mother != l.gp_mother[mother]  ;mother=l.gp_mother[mother])
+           {
+           if (l.gp_pdgid[mother] == 25) isHiggsSon=true;
+           }
+   if( !isHiggsSon) continue;
+   phoHiggs[ ((TLorentzVector*)l.gp_p4->At(igp))->Pt() ]=igp;
+   }
+if( phoHiggs.size()<2) return is_bkg; // higgs photons does not exist
+//map is already sorted
+map<float,int,std::greater<float> >::iterator iPho;
+int pho1=iPho->second;
+iPho++;
+int pho2=iPho->second;
+
+TLorentzVector g1=*((TLorentzVector*)l.gp_p4->At(pho1));
+TLorentzVector g2=*((TLorentzVector*)l.gp_p4->At(pho2));
+//particle level higgs definition
+TLorentzVector Hgg = g1+g2;
+
+//cut on photon pt
+
+assert(PhoPtDiffAnalysis.size()>0);
+
+if( g1.Pt() < PhoPtDiffAnalysis[0] ) return is_bkg;
+
+if(PhoPtDiffAnalysis.size()>1)
+	if( g2.Pt() < PhoPtDiffAnalysis[1]) return is_bkg;
+else // if only one put equal to the first photon pt cut
+	if( g2.Pt() < PhoPtDiffAnalysis[0] ) return is_bkg;
+
+ //compute isolation for photons
+float pho1Iso=0,pho2Iso=0;
+for(int igp=0;igp< l.gp_n ;igp++)
+        {
+        if ( l.gp_status[igp] != 1) continue;
+        if ( l.gp_pdgid[igp] == 12 || l.gp_pdgid[igp]==14 || l.gp_pdgid[igp]==16) continue; //neutrinos
+        if ( g1.DeltaR( *((TLorentzVector*)(l.gp_p4->At(igp))) ) < PhoIsoDRDiffAnalysis && pho1 !=igp ) pho1Iso += ((TLorentzVector*)(l.gp_p4->At(igp)))->Pt();
+        if ( g2.DeltaR( *((TLorentzVector*)(l.gp_p4->At(igp))) ) < PhoIsoDRDiffAnalysis && pho2 !=igp ) pho1Iso += ((TLorentzVector*)(l.gp_p4->At(igp)))->Pt();
+        }
+if(pho1Iso >= PhoIsoDiffAnalysis || pho2Iso >= PhoIsoDiffAnalysis) return is_bkg;
+
+//redo matching with configurables parameters TODO - very small corrections ~1./1000 000
+
+//jets
+float Ht=0;
+int nJets=0;
+map<float,int,std::greater<float> > jets;
+
+for(int iJet=0 ;iJet<l.genjet_algo1_n;iJet++)
+	{
+	if (  ((TLorentzVector*)l.genjet_algo1_p4->At(iJet) )->Pt() < JetPtForDiffAnalysis ) continue;
+	if (  fabs(((TLorentzVector*)l.genjet_algo1_p4->At(iJet) )->Eta() )> JetEtaForDiffAnalysis ) continue;
+	//DR Cut wrt photons
+	if ( ((TLorentzVector*)l.genjet_algo1_p4->At(iJet) )->DeltaR(g1) < JetPhoDRDiffAnalysis  ) continue;
+	if ( ((TLorentzVector*)l.genjet_algo1_p4->At(iJet) )->DeltaR(g2) < JetPhoDRDiffAnalysis  ) continue;
+	
+	//GEN JET is good
+	float pt=((TLorentzVector*)l.genjet_algo1_p4->At(iJet))->Pt();
+	Ht+=pt;
+	nJets+=1;
+	jets[ pt ] = iJet;
+	}
+
+//compute variable
+float var=-1;
+if( VarDef=="pToMscaled")
+	{
+	var=Hgg.Pt()*125./Hgg.M();	
+	}
+else if( VarDef=="pT")
+	{
+	var=Hgg.Pt();
+	} 
+else if( VarDef=="Ygg")
+	{
+	var=Hgg.Rapidity();
+	} 
+else if( VarDef=="CosThetaStar")
+	{
+	var=getCosThetaCS(g1,g2,l.sqrtS);
+	} 
+else assert( 0  ); //variable not found
+
+int bin=is_bkg;
+
+assert( nVarCategories = varCatBoundaries.size()-1 );
+
+for(int iBin=0;iBin<nVarCategories;iBin++)
+	{
+	if( varCatBoundaries[iBin] <= var && var< varCatBoundaries[iBin+1] ) bin=iBin;	
+	}
+return bin ;
+}
