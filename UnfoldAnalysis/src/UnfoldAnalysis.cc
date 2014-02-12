@@ -76,6 +76,7 @@ int bin=-1;
 if (doUnfoldHisto)
 	{
 	bin= computeGenBin(l,cur_type)	;
+	if ( bin<0 ) bin=nVarCategories;
 	if(isCorrectVertex)l.rooContainer->InputDataPoint(Form("sig_Bin%d_Cat%d_mass_m%d_rv",bin,category,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
 	else l.rooContainer->InputDataPoint(Form("sig_Bin%d_Cat%d_mass_m%d_wv",bin,category,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
 	}//end doUnfoldHisto
