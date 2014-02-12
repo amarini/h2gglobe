@@ -209,8 +209,17 @@ return bin ;
 
 // -------------------------------------------------------------------------------------------
 bool UnfoldAnalysis::Analysis(LoopAll& l, Int_t jentry){
+
 bool r=UNFOLD_INHERITANCE::Analysis(l,jentry);
 int cur_type = l.itype[l.current];
+//--- exit if not needed
+if (cur_type >= 0) return r;
+bool isToBook=false;
+for(int i=0 ;i<sigPointsToBook.size();i++) if(sigPointsToBook[i]==l.normalizer()->GetMass(cur_type) ) isToBook=true;
+
+if(!isToBook) return r;
+//-----
+
 int bin=computeGenBin(l,cur_type);
  int h,g1,g2,i1,i2;
 if (bin>0 && doUnfoldHisto )
