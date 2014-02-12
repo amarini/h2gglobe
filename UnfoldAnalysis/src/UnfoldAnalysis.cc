@@ -45,7 +45,7 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 	}
    assert( nCategories_%nVarCategories == 0 );
 
-	l.rooContainer->verbosity_=true;
+	//l.rooContainer->verbosity_=true;
     for(size_t isig=0; isig<sigPointsToBook.size(); ++isig) {
         int sig = sigPointsToBook[isig];
 	if (doUnfoldHisto) // here: don't care about sigProc
@@ -57,14 +57,16 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_mass_m%d_rv",iBin,sig),nDataBins);
 			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_mass_m%d_wv",iBin,sig),nDataBins);
 			}
+			cout<<endl;
 		//genLevel Histograms -
 		for(int iBin=0;iBin<= nVarCategories;iBin++)
 			{
 			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_gen_Bin%d_mass_m%d",iBin,sig),nDataBins);
 			}
+			cout<<endl;
 		}
 	}
-	l.rooContainer->verbosity_=false;
+	//l.rooContainer->verbosity_=false;
 }
 
 
@@ -196,6 +198,58 @@ else if( VarDef=="CosThetaStar")
 	{
 	var=getCosThetaCS(g1,g2,l.sqrtS);
 	} 
+else if ( VarDef=="dPhi")
+	{
+	var=fabs(g1.DeltaPhi(g2));
+	}
+else if ( VarDef == "Njets")
+	{
+	var=nJets;
+	}
+else if ( VarDef == "LeadJetpT")
+	{
+	if (nJets>0)
+	var = ((TLorentzVector*)l.genjet_algo1_p4->At(jets.begin()->second))->Pt();
+	else 
+	var = -1;
+	}
+else if (VarDef == "dPhijj")
+	{
+	if (nJets >1)
+		{
+		TLorentzVector j1=*((TLorentzVector*)l.genjet_algo1_p4->At(jets.begin()->second));
+		TLorentzVector j2=*((TLorentzVector*)l.genjet_algo1_p4->At( (jets.begin()++)->second));
+		
+		var= fabs(j1.DeltaPhi(j2));
+		}
+	else
+		var=-1;
+	}
+else if (VarDef == "Mjj")
+	{
+	if (nJets >1)
+		{
+		TLorentzVector j1=*((TLorentzVector*)l.genjet_algo1_p4->At(jets.begin()->second));
+		TLorentzVector j2=*((TLorentzVector*)l.genjet_algo1_p4->At( (jets.begin()++)->second));
+		
+		var= (j1+j2).M(); 
+		}
+	else
+		var=-1;
+	}
+else if ( VarDef == "dPhiggjj")
+	{
+	if (nJets >1)
+		{
+		TLorentzVector j1=*((TLorentzVector*)l.genjet_algo1_p4->At(jets.begin()->second));
+		TLorentzVector j2=*((TLorentzVector*)l.genjet_algo1_p4->At( (jets.begin()++)->second));
+		
+		var=  fabs(Hgg.DeltaPhi(j1+j2));
+		}
+	else
+		var=-1;
+	}
+
 else assert( 0  ); //variable not found
 
 int bin=is_bkg;
