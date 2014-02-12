@@ -13,14 +13,14 @@ cout<<endl;
 cout <<"PhoPtDiffAnalysis="<<PhoPtDiffAnalysis[0];
 	if (PhoPtDiffAnalysis.size() >1) cout<< ","<<PhoPtDiffAnalysis[1];
 	cout<<endl;
-cout<<"PhoEtaDiffAnalysis="    <<PhoEtaDiffAnalysis;
-cout<<"PhoIsoDiffAnalysis="    <<PhoIsoDiffAnalysis;
-cout<<"PhoIsoDRDiffAnalysis="  <<PhoIsoDRDiffAnalysis;
-cout<<"JetPhoDRDiffAnalysis="  <<JetPhoDRDiffAnalysis;
-cout<<"JetEtaForDiffAnalysis=" <<JetEtaForDiffAnalysis;
-cout<<"JetPtForDiffAnalysis="  <<JetPtForDiffAnalysis;
-cout<<"VarDef="                <<VarDef;
-cout<<"nVarCategories="        <<nVarCategories;
+cout<<"PhoEtaDiffAnalysis="    <<PhoEtaDiffAnalysis<<endl;
+cout<<"PhoIsoDiffAnalysis="    <<PhoIsoDiffAnalysis<<endl;
+cout<<"PhoIsoDRDiffAnalysis="  <<PhoIsoDRDiffAnalysis<<endl;
+cout<<"JetPhoDRDiffAnalysis="  <<JetPhoDRDiffAnalysis<<endl;
+cout<<"JetEtaForDiffAnalysis=" <<JetEtaForDiffAnalysis<<endl;
+cout<<"JetPtForDiffAnalysis="  <<JetPtForDiffAnalysis<<endl;
+cout<<"VarDef="                <<VarDef<<endl;
+cout<<"nVarCategories="        <<nVarCategories<<endl;
 cout<<"varCatBoundaries=";
 for(int i=0;i<varCatBoundaries.size();i++)cout<<varCatBoundaries[i]<<",";
 	cout<<endl;
@@ -45,6 +45,7 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 	}
    assert( nCategories_%nVarCategories == 0 );
 
+	l.rooContainer->verbosity_=true;
     for(size_t isig=0; isig<sigPointsToBook.size(); ++isig) {
         int sig = sigPointsToBook[isig];
 	if (doUnfoldHisto) // here: don't care about sigProc
@@ -63,6 +64,7 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 			}
 		}
 	}
+	l.rooContainer->verbosity_=false;
 }
 
 
