@@ -29,6 +29,7 @@ sigProcessesToBook.clear();
 PhoPtDiffAnalysis.resize(2);PhoPtDiffAnalysis[0]=40;PhoPtDiffAnalysis[1]=30;
 };
 //destructor
+void Init(LoopAll&);
 
 void bookSignalModel(LoopAll& l, Int_t nDataBins) ;
 

@@ -1,6 +1,35 @@
 #include "UnfoldAnalysis/interface/UnfoldAnalysis.h"
 
 
+void UnfoldAnalysis::Init(LoopAll&l){
+UNFOLD_INHERITANCE::Init(l);
+
+cout<<"----------------------------------------------------------------------------------------------------"<<endl;
+cout<<"Unfold Analysis"<<endl;
+cout<<"----------------------------------------------------------------------------------------------------"<<endl;
+cout<<"doUnfoldHisto="<<doUnfoldHisto<<endl;
+cout<<endl;
+cout <<"PhoPtDiffAnalysis="<<PhoPtDiffAnalysis[0];
+	if (PhoPtDiffAnalysis.size() >1) cout<< ","<<PhoPtDiffAnalysis[1];
+	cout<<endl;
+cout<<"PhoEtaDiffAnalysis="    <<PhoEtaDiffAnalysis;
+cout<<"PhoIsoDiffAnalysis="    <<PhoIsoDiffAnalysis;
+cout<<"PhoIsoDRDiffAnalysis="  <<PhoIsoDRDiffAnalysis;
+cout<<"JetPhoDRDiffAnalysis="  <<JetPhoDRDiffAnalysis;
+cout<<"JetEtaForDiffAnalysis=" <<JetEtaForDiffAnalysis;
+cout<<"JetPtForDiffAnalysis="  <<JetPtForDiffAnalysis;
+cout<<"VarDef="                <<VarDef;
+cout<<"nVarCategories="        <<nVarCategories;
+cout<<"varCatBoundaries=";
+for(int i=0;i<varCatBoundaries.size();i++)cout<<varCatBoundaries[i]<<",";
+	cout<<endl;
+
+cout<<"----------------------------------------------------------------------------------------------------"<<endl;
+
+}
+
+
+
 // -------------------------------------------------------------------------------------------
 void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins) 
 {
