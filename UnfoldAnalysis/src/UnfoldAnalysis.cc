@@ -19,7 +19,8 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
         int sig = sigPointsToBook[isig];
 	if (doUnfoldHisto) // here: don't care about sigProc
 		{
-		for(int iCat=0;iCat<nCategories_/nVarCategories;iCat++)
+		//for(int iCat=0;iCat<nCategories_/nVarCategories;iCat++)
+		for(int iCat=0;iCat<nCategories_;iCat++)
 		for(int iBin=0;iBin<= nVarCategories;iBin++)
 			{
 			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_Cat%d_mass_m%d_rv",iBin,iCat,sig),nDataBins);
@@ -38,7 +39,7 @@ void UnfoldAnalysis::FillRooContainer(LoopAll& l, int cur_type, float mass, floa
 UNFOLD_INHERITANCE::FillRooContainer(l,cur_type,mass,diphotonMVA,category,weight,isCorrectVertex,diphoton_id);
 
 //category w/ observables bins folded in
-int sub_cat=category/nVarCategories;
+//int sub_cat=category/nVarCategories;
 int bin=-1;
 
 //figure out gen bin: gen selection
@@ -46,8 +47,8 @@ int bin=-1;
 if (doUnfoldHisto)
 	{
 	bin= computeGenBin(l,cur_type)	;
-	if(isCorrectVertex)l.rooContainer->InputDataPoint(Form("sig_Bin%d_Cat%d_mass_m%d_rv",bin,sub_cat,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
-	else l.rooContainer->InputDataPoint(Form("sig_Bin%d_Cat%d_mass_m%d_wv",bin,sub_cat,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
+	if(isCorrectVertex)l.rooContainer->InputDataPoint(Form("sig_Bin%d_Cat%d_mass_m%d_rv",bin,category,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
+	else l.rooContainer->InputDataPoint(Form("sig_Bin%d_Cat%d_mass_m%d_wv",bin,category,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
 	}//end doUnfoldHisto
 
 }
