@@ -17,7 +17,7 @@ public:
 
 //constructor
 UnfoldAnalysis():UNFOLD_INHERITANCE(),
-	JetPtForDiffAnalysis(30.),
+//	JetPtForDiffAnalysis(30.),
 	doUnfoldHisto(0),
 //	nVarCategories(0),
 	PhoEtaDiffAnalysis(2.5),
@@ -55,21 +55,14 @@ float PhoIsoDRDiffAnalysis;
 float JetPhoDRDiffAnalysis;
 float JetEtaForDiffAnalysis;
 
-//ineheredit
+//ineheredit - must not be redeclared, otherwise shadow them
 
-float JetPtForDiffAnalysis;
-
-string VarDef;//("pToMscaled");
-
-//Possibilities are:
-//VarDef=pT
-//VarDef=Ygg
-//VarDef=CosThetaStar
-vector<int> sigPointsToBook;
-vector<string> sigProcessesToBook ;
-
-int nVarCategories;
-vector<float> varCatBoundaries;//=0.,20.,35.,60.,130.,400.;
+//float JetPtForDiffAnalysis;
+//string VarDef;//("pToMscaled");
+//vector<int> sigPointsToBook;
+//vector<string> sigProcessesToBook ;
+//int nVarCategories;
+//vector<float> varCatBoundaries;//=0.,20.,35.,60.,130.,400.;
 
 int computeGenBin(LoopAll &l,int cur_type);
 
