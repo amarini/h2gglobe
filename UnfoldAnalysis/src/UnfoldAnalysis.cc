@@ -50,11 +50,11 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 	if (doUnfoldHisto) // here: don't care about sigProc
 		{
 		//for(int iCat=0;iCat<nCategories_/nVarCategories;iCat++)
-		for(int iCat=0;iCat<nCategories_;iCat++)
+		//for(int iCat=0;iCat<nCategories_;iCat++)
 		for(int iBin=0;iBin<= nVarCategories;iBin++)
 			{
-			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_Cat%d_mass_m%d_rv",iBin,iCat,sig),nDataBins);
-			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_Cat%d_mass_m%d_wv",iBin,iCat,sig),nDataBins);
+			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_mass_m%d_rv",iBin,sig),nDataBins);
+			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_mass_m%d_wv",iBin,sig),nDataBins);
 			}
 		//genLevel Histograms -
 		for(int iBin=0;iBin<= nVarCategories;iBin++)
@@ -83,8 +83,8 @@ if (doUnfoldHisto)
 	{
 	bin= computeGenBin(l,cur_type)	;
 	if ( bin<0 ) bin=nVarCategories;
-	if(isCorrectVertex)l.rooContainer->InputDataPoint(Form("sig_Bin%d_Cat%d_mass_m%.0f_rv",bin,category,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
-	else l.rooContainer->InputDataPoint(Form("sig_Bin%d_Cat%d_mass_m%.0f_wv",bin,category,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
+	if(isCorrectVertex)l.rooContainer->InputDataPoint(Form("sig_Bin%d_mass_m%.0f_rv",bin,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
+	else l.rooContainer->InputDataPoint(Form("sig_Bin%d_mass_m%.0f_wv",bin,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
 	}//end doUnfoldHisto
 
 }
@@ -225,7 +225,7 @@ int bin=computeGenBin(l,cur_type);
 if (bin>0 && doUnfoldHisto )
 	l.FindMCHiggsPhotons(h,g1,g2,i1,i2);
 	float HiggsPt=((TLorentzVector*)l.gp_p4->At(h))->Pt();
-	l.rooContainer->InputDataPoint(Form("sig_gen_Bin%d_mass_m%d",bin,l.normalizer()->GetMass(cur_type) ), l.normalizer()->GetMass(cur_type) , (float)l.sampleContainer[l.current_sample_index].weight() * PtReweight(HiggsPt,cur_type) );
+	l.rooContainer->InputDataPoint(Form("sig_gen_Bin%d_mass_m%d",bin,l.normalizer()->GetMass(cur_type) ), 0 ,l.normalizer()->GetMass(cur_type) , (float)l.sampleContainer[l.current_sample_index].weight() * PtReweight(HiggsPt,cur_type) );
 //implementation of gen level histograms
 return r;
 }
