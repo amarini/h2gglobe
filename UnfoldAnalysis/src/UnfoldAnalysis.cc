@@ -222,9 +222,10 @@ if(!isToBook) return r;
 
 int bin=computeGenBin(l,cur_type);
  int h,g1,g2,i1,i2;
-if (bin>0 && doUnfoldHisto && !l.FindMCHiggsPhotons(h,g1,g2,i1,i2) && h>=0 )
+if (bin>0 && doUnfoldHisto && !l.FindMCHiggsPhotons(h,g1,g2,i1,i2) && h>=0 ){
 	float HiggsPt=((TLorentzVector*)l.gp_p4->At(h))->Pt();
 	l.rooContainer->InputDataPoint(Form("sig_gen_Bin%d_mass_m%d",bin,l.normalizer()->GetMass(cur_type) ), 0 ,l.normalizer()->GetMass(cur_type) , (float)l.sampleContainer[l.current_sample_index].weight() * PtReweight(HiggsPt,cur_type) );
+	}
 //implementation of gen level histograms
 return r;
 }
