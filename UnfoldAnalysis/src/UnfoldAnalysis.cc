@@ -249,7 +249,28 @@ else if ( VarDef == "dPhiggjj")
 	else
 		var=-1;
 	}
-
+else if ( VarDef == "Zepp" )
+	{
+	if (nJets >1)
+		{
+		TLorentzVector j1=*((TLorentzVector*)l.genjet_algo1_p4->At(jets.begin()->second));
+		TLorentzVector j2=*((TLorentzVector*)l.genjet_algo1_p4->At( (jets.begin()++)->second));
+		var=fabs(Hgg.Eta() - 0.5*(j1.Eta() + j2.Eta()));
+		}
+	else
+		var = -1;
+	}
+else if ( VarDef == "dEtajj")
+	{
+	if (nJets >1)
+		{
+		TLorentzVector j1=*((TLorentzVector*)l.genjet_algo1_p4->At(jets.begin()->second));
+		TLorentzVector j2=*((TLorentzVector*)l.genjet_algo1_p4->At( (jets.begin()++)->second));
+		var=fabs(j1.Eta() - j2.Eta());
+		}
+	else
+		var = -1;
+	}
 else assert( 0  ); //variable not found
 
 int bin=is_bkg;
