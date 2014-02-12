@@ -40,6 +40,7 @@ void FillRooContainerSyst(LoopAll& l, const std::string &name, int cur_type,
         std::vector<double> & mass_errors, std::vector<double> & mva_errors,
         std::vector<int> & categories, std::vector<double> & weights, int diphoton_id);
 
+bool Analysis(LoopAll& l, Int_t jentry);
 
 //flags
 bool doUnfoldHisto;
@@ -57,12 +58,14 @@ float JetEtaForDiffAnalysis;
 
 //ineheredit - must not be redeclared, otherwise shadow them
 
+//---- defined in diff analysis
 //float JetPtForDiffAnalysis;
 //string VarDef;//("pToMscaled");
 //vector<int> sigPointsToBook;
 //vector<string> sigProcessesToBook ;
 //int nVarCategories;
 //vector<float> varCatBoundaries;//=0.,20.,35.,60.,130.,400.;
+//----------
 
 int computeGenBin(LoopAll &l,int cur_type);
 

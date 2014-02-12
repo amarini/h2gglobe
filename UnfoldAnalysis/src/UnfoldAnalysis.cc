@@ -1,6 +1,7 @@
 #include "UnfoldAnalysis/interface/UnfoldAnalysis.h"
 
 
+// -------------------------------------------------------------------------------------------
 void UnfoldAnalysis::Init(LoopAll&l){
 UNFOLD_INHERITANCE::Init(l);
 
@@ -54,6 +55,11 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 			{
 			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_Cat%d_mass_m%d_rv",iBin,iCat,sig),nDataBins);
 			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_Cat%d_mass_m%d_wv",iBin,iCat,sig),nDataBins);
+			}
+		//genLevel Histograms -
+		for(int iBin=0;iBin<= nVarCategories;iBin++)
+			{
+			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_gen_Bin%d_mass_m%d",iBin,sig),nDataBins);
 			}
 		}
 	}
@@ -199,4 +205,18 @@ for(int iBin=0;iBin<nVarCategories;iBin++)
 	if( varCatBoundaries[iBin] <= var && var< varCatBoundaries[iBin+1] ) bin=iBin;	
 	}
 return bin ;
+}
+
+// -------------------------------------------------------------------------------------------
+bool UnfoldAnalysis::Analysis(LoopAll& l, Int_t jentry){
+bool r=UNFOLD_INHERITANCE::Analysis(l,jentry);
+int cur_type = l.itype[l.current];
+int bin=computeGenBin(l,cur_type);
+ int h,g1,g2,i1,i2;
+if (bin>0 && doUnfoldHisto )
+	l.FindMCHiggsPhotons(h,g1,g2,i1,i2);
+	float HiggsPt=((TLorentzVector*)l.gp_p4->At(h))->Pt();
+	l.rooContainer->InputDataPoint(Form("sig_gen_Bin%d_mass_m%d",bin,l.normalizer()->GetMass(cur_type) ), l.normalizer()->GetMass(cur_type) , (float)l.sampleContainer[l.current_sample_index].weight() * PtReweight(HiggsPt,cur_type) );
+//implementation of gen level histograms
+return r;
 }
