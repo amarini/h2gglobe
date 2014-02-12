@@ -19,7 +19,7 @@ public:
 UnfoldAnalysis():UNFOLD_INHERITANCE(),
 	JetPtForDiffAnalysis(30.),
 	doUnfoldHisto(0),
-	nVarCategories(0),
+//	nVarCategories(0),
 	PhoEtaDiffAnalysis(2.5),
 	PhoIsoDiffAnalysis(5),
 	PhoIsoDRDiffAnalysis(0.5),
@@ -57,7 +57,7 @@ float JetEtaForDiffAnalysis;
 
 //ineheredit
 
-Float_t JetPtForDiffAnalysis;
+float JetPtForDiffAnalysis;
 
 string VarDef;//("pToMscaled");
 
@@ -68,7 +68,7 @@ string VarDef;//("pToMscaled");
 vector<int> sigPointsToBook;
 vector<string> sigProcessesToBook ;
 
-Int_t nVarCategories;
+int nVarCategories;
 vector<float> varCatBoundaries;//=0.,20.,35.,60.,130.,400.;
 
 int computeGenBin(LoopAll &l,int cur_type);
