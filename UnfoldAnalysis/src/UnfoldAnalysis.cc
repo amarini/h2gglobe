@@ -100,6 +100,12 @@ void UnfoldAnalysis::FillRooContainerSyst(LoopAll& l, const std::string &name, i
 {
 UNFOLD_INHERITANCE::FillRooContainerSyst(l,name,cur_type,mass_errors,mva_errors,categories,weights,diphoton_id);
 //should I add something here? 
+if (cur_type <0 ){
+	int bin=computeGenBin(l,cur_type);
+	if (bin<0) bin=nVarCategories;
+	int sig=l.normalizer()->GetMass(cur_type) ;
+        l.rooContainer->InputSystematicSet( Form("sig_Bin%d_mass_m%.0f",bin,sig),name,categories,mass_errors,weights);
+	}
 }
 
 int UnfoldAnalysis::computeGenBin(LoopAll &l,int cur_type){
