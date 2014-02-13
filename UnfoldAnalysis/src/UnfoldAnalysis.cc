@@ -149,7 +149,7 @@ if( phoHiggs.size()<2) return is_bkg; // higgs photons does not exist
 effGenCut["Higgs"]+=1;//DEBUG
 
 //map is already sorted
-map<float,int,std::greater<float> >::iterator iPho;
+map<float,int,std::greater<float> >::iterator iPho=phoHiggs.begin();
 int pho1=iPho->second;
 iPho++;
 int pho2=iPho->second;
