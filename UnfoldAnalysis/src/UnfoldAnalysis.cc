@@ -116,16 +116,16 @@ int UnfoldAnalysis::computeGenBin(LoopAll &l,int cur_type,int &ig1,int &ig2){
 int is_bkg=-1;
 ig1=-1;ig2=-1;
 
-effGenCut["TOT"]+=1; //DEBUG
+//effGenCut["TOT"]+=1; //DEBUG
 
-if( effGenCut["TOT"] >100) //DEBUG
-	{
-	cout<<" -- EFF Gen Cuts:"<<effGenCut["TOT"]<<": "<<effGenCut["Full"]/effGenCut["TOT"]
-		 <<" | H "<<effGenCut["Higgs"]/effGenCut["TOT"]
-		 <<" | P "<<effGenCut["pho"]/effGenCut["Higgs"]
-		 <<" | B "<<effGenCut["Full"]/effGenCut["pho"]
-		<<endl;
-	}
+//if( effGenCut["TOT"] >100) //DEBUG
+//	{
+//	cout<<" -- EFF Gen Cuts:"<<effGenCut["TOT"]<<": "<<effGenCut["Full"]/effGenCut["TOT"]
+//		 <<" | H "<<effGenCut["Higgs"]/effGenCut["TOT"]
+//		 <<" | P "<<effGenCut["pho"]/effGenCut["Higgs"]
+//		 <<" | B "<<effGenCut["Full"]/effGenCut["pho"]
+//		<<endl;
+//	}
 
 if(cur_type>=0) return is_bkg; //no gen for bkg & data
 
@@ -147,7 +147,7 @@ for(int igp=0;igp< l.gp_n ;igp++)
    }
 if( phoHiggs.size()<2) return is_bkg; // higgs photons does not exist
 
-effGenCut["Higgs"]+=1;//DEBUG
+//effGenCut["Higgs"]+=1;//DEBUG
 
 //map is already sorted
 map<float,int,std::greater<float> >::iterator iPho=phoHiggs.begin();
@@ -186,7 +186,7 @@ for(int igp=0;igp< l.gp_n ;igp++)
 
 if(pho1Iso >= PhoIsoDiffAnalysis || pho2Iso >= PhoIsoDiffAnalysis) return is_bkg;
 
-effGenCut["pho"]+=1;//DEBUG
+//effGenCut["pho"]+=1;//DEBUG
 //redo matching with configurables parameters GEN->RECO TODO - very small corrections ~1./1000 000
 
 //jets
@@ -309,7 +309,7 @@ assert( nVarCategories = varCatBoundaries.size()-1 );
 for(int iBin=0;iBin<nVarCategories;iBin++)
 	if( varCatBoundaries[iBin] <= var && var< varCatBoundaries[iBin+1] ) bin=iBin;	
 
-if(bin>=0)effGenCut["Full"]+=1; //DEBUG
+//if(bin>=0)effGenCut["Full"]+=1; //DEBUG
 
 return bin ;
 }
