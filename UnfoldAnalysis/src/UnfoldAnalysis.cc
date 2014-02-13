@@ -59,11 +59,14 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 			}
 			cout<<endl;
 		//genLevel Histograms -
+		// book only 1 cat
+		l.rooContainer->SetNCategories(1);
 		for(int iBin=0;iBin<= nVarCategories;iBin++)
 			{
 			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_gen_Bin%d_mass_m%d",iBin,sig),nDataBins);
 			}
 			cout<<endl;
+		l.rooContainer->SetNCategories(nCategories_);
 		}
 	}
 	//l.rooContainer->verbosity_=false;
@@ -112,6 +115,17 @@ int UnfoldAnalysis::computeGenBin(LoopAll &l,int cur_type){
 
 int is_bkg=-1;
 
+effGenCut["TOT"]+=1; //DEBUG
+
+if( effGenCut["TOT"] >100) //DEBUG
+	{
+	cout<<" -- EFF Gen Cuts:"<<effGenCut["TOT"]<<": "<<effGenCut["Full"]/effGenCut["TOT"]
+		 <<" | H "<<effGenCut["Higgs"]/effGenCut["TOT"]
+		 <<" | P "<<effGenCut["pho"]/effGenCut["Higgs"]
+		 <<" | B "<<effGenCut["Full"]/effGenCut["pho"]
+		<<endl;
+	}
+
 if(cur_type>=0) return is_bkg; //no gen for bkg & data
 
 //loop over the gen particles
@@ -131,6 +145,9 @@ for(int igp=0;igp< l.gp_n ;igp++)
    phoHiggs[ ((TLorentzVector*)l.gp_p4->At(igp))->Pt() ]=igp;
    }
 if( phoHiggs.size()<2) return is_bkg; // higgs photons does not exist
+
+effGenCut["Higgs"]+=1;//DEBUG
+
 //map is already sorted
 map<float,int,std::greater<float> >::iterator iPho;
 int pho1=iPho->second;
@@ -162,9 +179,12 @@ for(int igp=0;igp< l.gp_n ;igp++)
         if ( g1.DeltaR( *((TLorentzVector*)(l.gp_p4->At(igp))) ) < PhoIsoDRDiffAnalysis && pho1 !=igp ) pho1Iso += ((TLorentzVector*)(l.gp_p4->At(igp)))->Pt();
         if ( g2.DeltaR( *((TLorentzVector*)(l.gp_p4->At(igp))) ) < PhoIsoDRDiffAnalysis && pho2 !=igp ) pho1Iso += ((TLorentzVector*)(l.gp_p4->At(igp)))->Pt();
         }
+//they are matched to the higgs, so I don't need to consider more photons if not pass the preselection
+
 if(pho1Iso >= PhoIsoDiffAnalysis || pho2Iso >= PhoIsoDiffAnalysis) return is_bkg;
 
-//redo matching with configurables parameters TODO - very small corrections ~1./1000 000
+effGenCut["pho"]+=1;//DEBUG
+//redo matching with configurables parameters GEN->RECO TODO - very small corrections ~1./1000 000
 
 //jets
 float Ht=0;
@@ -284,9 +304,10 @@ int bin=is_bkg;
 assert( nVarCategories = varCatBoundaries.size()-1 );
 
 for(int iBin=0;iBin<nVarCategories;iBin++)
-	{
 	if( varCatBoundaries[iBin] <= var && var< varCatBoundaries[iBin+1] ) bin=iBin;	
-	}
+
+if(bin>=0)effGenCut["Full"]+=1; //DEBUG
+
 return bin ;
 }
 

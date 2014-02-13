@@ -69,10 +69,10 @@ float JetEtaForDiffAnalysis;
 
 int computeGenBin(LoopAll &l,int cur_type);
 
-//compute Gen Preselection
-
 protected:
 
+//this variables are used ONLY for debug
+map<string,float> effGenCut;
 
 };
 
