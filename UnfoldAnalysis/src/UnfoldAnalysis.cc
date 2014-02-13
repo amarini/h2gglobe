@@ -111,9 +111,10 @@ if (cur_type <0 ){
 	}
 }
 
-int UnfoldAnalysis::computeGenBin(LoopAll &l,int cur_type){
+int UnfoldAnalysis::computeGenBin(LoopAll &l,int cur_type,int &ig1,int &ig2){
 
 int is_bkg=-1;
+ig1=-1;ig2=-1;
 
 effGenCut["TOT"]+=1; //DEBUG
 
@@ -153,6 +154,8 @@ map<float,int,std::greater<float> >::iterator iPho=phoHiggs.begin();
 int pho1=iPho->second;
 iPho++;
 int pho2=iPho->second;
+
+ig1=pho1;ig2=pho2;
 
 TLorentzVector g1=*((TLorentzVector*)l.gp_p4->At(pho1));
 TLorentzVector g2=*((TLorentzVector*)l.gp_p4->At(pho2));
@@ -324,10 +327,11 @@ for(int i=0 ;i<sigPointsToBook.size();i++) if(sigPointsToBook[i]==l.normalizer()
 if(!isToBook) return r;
 //-----
 
-int bin=computeGenBin(l,cur_type);
- int h,g1,g2,i1,i2;
-if (bin>0 && doUnfoldHisto && !l.FindMCHiggsPhotons(h,g1,g2,i1,i2) && h>=0 ){
-	float HiggsPt=((TLorentzVector*)l.gp_p4->At(h))->Pt();
+int g1,g2;
+int bin=computeGenBin(l,cur_type,g1,g2);
+
+if (bin>0 && doUnfoldHisto && g1>0 && g2>0 ){
+	float HiggsPt= ( *((TLorentzVector*)l.gp_p4->At(g1)) + *((TLorentzVector*)l.gp_p4->At(g2)) ).Pt();
 	l.rooContainer->InputDataPoint(Form("sig_gen_Bin%d_mass_m%d",bin,l.normalizer()->GetMass(cur_type) ), 0 ,l.normalizer()->GetMass(cur_type) , (float)l.sampleContainer[l.current_sample_index].weight() * PtReweight(HiggsPt,cur_type) );
 	}
 //implementation of gen level histograms
