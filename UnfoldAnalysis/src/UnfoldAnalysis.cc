@@ -107,7 +107,7 @@ if (cur_type <0 ){
 	int bin=computeGenBin(l,cur_type);
 	if (bin<0) bin=nVarCategories;
 	int sig=l.normalizer()->GetMass(cur_type) ;
-        l.rooContainer->InputSystematicSet( Form("sig_Bin%d_mass_m%.0f",bin,sig),name,categories,mass_errors,weights);
+        l.rooContainer->InputSystematicSet( Form("sig_Bin%d_mass_m%d",bin,sig),name,categories,mass_errors,weights);
 	}
 }
 
