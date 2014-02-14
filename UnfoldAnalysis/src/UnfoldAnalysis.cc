@@ -42,8 +42,8 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 	{
 	cout<<"nCategories %% nVarCategories !=0 ["<<nCategories_<<","<<nVarCategories<<"]"<<endl;
 	cout<<"      *** mapping not supported ***"<<endl;
+	assert (0);
 	}
-   assert( nCategories_%nVarCategories == 0 );
 
 	//l.rooContainer->verbosity_=true;
     for(size_t isig=0; isig<sigPointsToBook.size(); ++isig) {
@@ -54,6 +54,9 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 		//for(int iCat=0;iCat<nCategories_;iCat++)
 		for(int iBin=0;iBin<= nVarCategories;iBin++)
 			{
+			//should be used for syst
+			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_mass_m%d",iBin,sig),nDataBins);
+			//signal model for right and wrong vertex
 			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_mass_m%d_rv",iBin,sig),nDataBins);
 			l.rooContainer->CreateDataSet("CMS_hgg_mass",Form("sig_Bin%d_mass_m%d_wv",iBin,sig),nDataBins);
 			}
