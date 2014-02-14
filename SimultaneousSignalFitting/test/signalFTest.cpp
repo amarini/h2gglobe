@@ -69,12 +69,25 @@ void SetErrorsToEmptyBins(RooDataHist *dh,double err=1e6)
 //TH1D *hist=dh->createHistogram();
 //int nentries = hist->GetNBinsX();
 int nentries = dh->numEntries();
+
+if (err <0) //adaptive
+	{
+	
+	for(int i=0;i<nentries;i++)
+		{
+		dh->get(i);
+		double e=dh->weightError(RooAbsData::SumW2);
+		if (e >0 && (e<err||err<0))err=e; 	
+		}
+	}	
+if(err<0)err=1.e6;
+
 for(int i=0;i<nentries;i++)
 	{
 	//if( hist->GetBinContent(i)== 0 ) hist->SetBinError(i,err);
 	dh->get(i);
 	const RooArgSet *as=dh->get();
-	if( dh->weight() <= 1e-6 || dh->weightError(RooAbsData::SumW2) <=1e-6  )dh->set( *as, 0, err); //actually it only increments errors & weights
+	if( dh->weightError(RooAbsData::SumW2) <=1e-8  )dh->set( *as, 0, err); //actually it only increments errors & weights
 	//if( dh->weightError(RooAbsData::SumW2) == 0  ) cout<< "ENTRY "<<i << " has weight="<<dh->weight()<<"and error=0"<<endl;
 	}
 //*dh=RooDataHist(dh->GetName(), dh->GetTitle(), dh->GetSometihng, hist)
@@ -219,8 +232,8 @@ int main(int argc, char *argv[]){
     				  //RooDataSet *dataWV = stripWeights(dataWVweight,mass);
     				  //RooDataSet *data = (RooDataSet*)inWS->data(Form("sig_%s_mass_m%d_cat%d",proc.c_str(),mass_,cat));
      
-	SetErrorsToEmptyBins(BinDataRV);
-	SetErrorsToEmptyBins(BinDataWV);
+	SetErrorsToEmptyBins(BinDataRV,-1); //-1=adaptive
+	SetErrorsToEmptyBins(BinDataWV,-1);
 
       int rvChoice=0;
       int wvChoice=0;
@@ -235,17 +248,20 @@ int main(int argc, char *argv[]){
       double prob=0.;
 
       dataRV->plotOn(plotsRV[proc][cat]);
+      //BinDataRV->plotOn(plotsRV[proc][cat],MarkerColor(kRed),MarkerSize(0.2),LineColor(kRed));
       while (prob<0.8 ) {       
 	//while (order<5) {
-	if(order>5 || dataRV->numEntries()==0) break;
+	if(order>5 ) break;
+	if(dataRV->numEntries()==0) { order=2; cache_order=1 ;break;}
         RooAddPdf *pdf = buildSumOfGaussians(Form("cat%d_g%d",cat,order),mass,MH,order);
 	pdf->fitTo(*BinDataRV,SumW2Error(true),Range(115,135)); //set initial parameters for chi2 fit
+	pdf->chi2FitTo(*BinDataRV,SumW2Error(true),Range(115,135)); //set initial parameters for chi2 fit
  
 	RooChi2Var chi2Var("chi2","chi2",*pdf,*BinDataRV,DataError(RooAbsData::SumW2),Range(115,135)) ;
-		RooMinuit m(chi2Var) ; // chi2fit -- not necessary but improves because this is a one shot fit
-		m.migrad();
-		m.hesse();
-		RooFitResult* r_chi2_wgt = m.save() ;
+		//RooMinuit m(chi2Var) ; // chi2fit -- not necessary but improves because this is a one shot fit
+		//m.migrad();
+		//m.hesse();
+		//RooFitResult* r_chi2_wgt = m.save() ;
 
         pdf->plotOn(plotsRV[proc][cat],LineColor(colors[order-1]));
         thisChi2 = chi2Var.getVal();
@@ -272,16 +288,20 @@ int main(int argc, char *argv[]){
       prob=0.;
 
       dataWV->plotOn(plotsWV[proc][cat]);
+      //BinDataWV->plotOn(plotsWV[proc][cat],MarkerColor(kRed),MarkerSize(0.2),LineColor(kRed));
       while (prob<0.8 ) {
       //while (order<4) {
-	if(order>5 || dataWV->numEntries()==0) break;
+	if(order>5 ) break;
+	if(dataWV->numEntries()==0) { order=2; cache_order=1 ;break;}
+
         RooAddPdf *pdf = buildSumOfGaussians(Form("cat%d_g%d",cat,order),mass,MH,order);
 	pdf->fitTo(*BinDataWV,SumW2Error(true),Range(115,135));
+	pdf->chi2FitTo(*BinDataWV,SumW2Error(true),Range(115,135));
 	RooChi2Var chi2Var("chi2","chi2",*pdf,*BinDataWV,DataError(RooAbsData::SumW2),Range(115,135)) ;
-		RooMinuit m(chi2Var) ;
-		m.migrad();
-		m.hesse();
-		RooFitResult* r_chi2_wgt = m.save() ;
+	//	RooMinuit m(chi2Var) ;
+	//	m.migrad();
+	//	m.hesse();
+	//	RooFitResult* r_chi2_wgt = m.save() ;
 
         pdf->plotOn(plotsWV[proc][cat],LineColor(colors[order-1]));
 	thisChi2=chi2Var.getVal();
