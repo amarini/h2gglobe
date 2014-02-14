@@ -1,9 +1,11 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <map>
 #include <vector>
 
 #include "TFile.h"
+#include "TTree.h"
 #include "TMath.h"
 #include "TCanvas.h"
 #include "TH1F.h"
@@ -21,6 +23,8 @@
 #include "RooPlot.h"
 #include "RooMsgService.h"
 #include "RooMinuit.h"
+#include "RooChi2Var.h"
+#include "RooTreeDataStore.h"
 
 #include "boost/program_options.hpp"
 #include "boost/algorithm/string/split.hpp"
@@ -58,6 +62,24 @@ void OptionParser(int argc, char *argv[]){
   if (vm.count("help")){ cout << desc << endl; exit(1);}
 	if (vm.count("recursive")) recursive_=true;
 	if (vm.count("forceFracUnity")) forceFracUnity_=true;
+}
+
+void SetErrorsToEmptyBins(RooDataHist *dh,double err=1e6)
+{
+//TH1D *hist=dh->createHistogram();
+//int nentries = hist->GetNBinsX();
+int nentries = dh->numEntries();
+for(int i=0;i<nentries;i++)
+	{
+	//if( hist->GetBinContent(i)== 0 ) hist->SetBinError(i,err);
+	dh->get(i);
+	const RooArgSet *as=dh->get();
+	if( dh->weight() <= 1e-6 || dh->weightError(RooAbsData::SumW2) <=1e-6  )dh->set( *as, 0, err); //actually it only increments errors & weights
+	//if( dh->weightError(RooAbsData::SumW2) == 0  ) cout<< "ENTRY "<<i << " has weight="<<dh->weight()<<"and error=0"<<endl;
+	}
+//*dh=RooDataHist(dh->GetName(), dh->GetTitle(), dh->GetSometihng, hist)
+
+return;
 }
 
 RooAddPdf *buildSumOfGaussians(string name, RooRealVar *mass, RooRealVar *MH, int nGaussians){
@@ -166,10 +188,10 @@ int main(int argc, char *argv[]){
       RooPlot *plotWV = mass->frame(Range(mass_-10,mass_+10));
       plotWV->SetTitle(Form("%s_cat%d_WV",procs[p].c_str(),cat));
       tempWV.push_back(plotWV);
-    }
+    } //end loop over cat
     plotsRV.insert(pair<string,vector<RooPlot*> >(procs[p],tempRV));
     plotsWV.insert(pair<string,vector<RooPlot*> >(procs[p],tempWV));
-  }
+  } //end loop over proc
 
   vector<int> colors;
   colors.push_back(kBlue);
@@ -182,17 +204,24 @@ int main(int argc, char *argv[]){
       string proc = procs[p];
       RooDataSet *dataRV = (RooDataSet*)inWS->data(Form("sig_%s_mass_m%d_rv_cat%d",proc.c_str(),mass_,cat));
       RooDataSet *dataWV = (RooDataSet*)inWS->data(Form("sig_%s_mass_m%d_wv_cat%d",proc.c_str(),mass_,cat));
-      //mass->setBins(160);
-      //RooDataHist *dataRV = dataRVtemp->binnedClone();
-      //RooDataHist *dataWV = dataWVtemp->binnedClone();
-      //RooDataSet *dataRVw = (RooDataSet*)dataRVtemp->reduce(Form("CMS_hgg_mass>=%3d && CMS_hgg_mass<=%3d",mass_-10,mass_+10)); 
-      //RooDataSet *dataWVw = (RooDataSet*)dataWVtemp->reduce(Form("CMS_hgg_mass>=%3d && CMS_hgg_mass<=%3d",mass_-10,mass_+10));
-      //RooDataHist *dataRV = new RooDataHist(Form("roohist_%s",dataRVtemp->GetName()),Form("roohist_%s",dataRVtemp->GetName()),RooArgSet(*mass),*dataRVtemp);
-      //RooDataHist *dataWV = new RooDataHist(Form("roohist_%s",dataWVtemp->GetName()),Form("roohist_%s",dataWVtemp->GetName()),RooArgSet(*mass),*dataWVtemp);
-      //RooDataSet *dataRV = stripWeights(dataRVweight,mass);
-      //RooDataSet *dataWV = stripWeights(dataWVweight,mass);
-      //RooDataSet *data = (RooDataSet*)inWS->data(Form("sig_%s_mass_m%d_cat%d",proc.c_str(),mass_,cat));
+
+      // see tutorials/roofit/rf403_weightedevts.C l.136
+      RooDataHist *BinDataRV = dataRV->binnedClone();
+      RooDataHist *BinDataWV = dataWV->binnedClone();
+    				  //mass->setBins(160);
+    				  //RooDataHist *dataRV = dataRVtemp->binnedClone();
+    				  //RooDataHist *dataWV = dataWVtemp->binnedClone();
+    				  //RooDataSet *dataRVw = (RooDataSet*)dataRVtemp->reduce(Form("CMS_hgg_mass>=%3d && CMS_hgg_mass<=%3d",mass_-10,mass_+10)); 
+    				  //RooDataSet *dataWVw = (RooDataSet*)dataWVtemp->reduce(Form("CMS_hgg_mass>=%3d && CMS_hgg_mass<=%3d",mass_-10,mass_+10));
+    				  //RooDataHist *dataRV = new RooDataHist(Form("roohist_%s",dataRVtemp->GetName()),Form("roohist_%s",dataRVtemp->GetName()),RooArgSet(*mass),*dataRVtemp);
+    				  //RooDataHist *dataWV = new RooDataHist(Form("roohist_%s",dataWVtemp->GetName()),Form("roohist_%s",dataWVtemp->GetName()),RooArgSet(*mass),*dataWVtemp);
+    				  //RooDataSet *dataRV = stripWeights(dataRVweight,mass);
+    				  //RooDataSet *dataWV = stripWeights(dataWVweight,mass);
+    				  //RooDataSet *data = (RooDataSet*)inWS->data(Form("sig_%s_mass_m%d_cat%d",proc.c_str(),mass_,cat));
      
+	SetErrorsToEmptyBins(BinDataRV);
+	SetErrorsToEmptyBins(BinDataWV);
+
       int rvChoice=0;
       int wvChoice=0;
       
@@ -200,77 +229,78 @@ int main(int argc, char *argv[]){
       int order=1;
       int prev_order=0;
       int cache_order=0;
-      double thisNll=0.;
-      double prevNll=1.e6;
+      double thisChi2=0.;
+      double prevChi2=1.e6;
       double chi2=0.;
       double prob=0.;
 
       dataRV->plotOn(plotsRV[proc][cat]);
-      //while (prob<0.8) {
-      while (order<5) {
+      while (prob<0.8 ) {       
+	//while (order<5) {
+	if(order>5 || dataRV->numEntries()==0) break;
         RooAddPdf *pdf = buildSumOfGaussians(Form("cat%d_g%d",cat,order),mass,MH,order);
-        RooFitResult *fitRes = pdf->fitTo(*dataRV,Save(true),SumW2Error(true));//,Range(mass_-10,mass_+10));
-        double myNll=0.;
-        thisNll = fitRes->minNll();
-        //double myNll = getMyNLL(mass,pdf,dataRV);
-        //thisNll = getMyNLL(mass,pdf,dataRV);
-        //RooAbsReal *nll = pdf->createNLL(*dataRV);
-        //RooMinuit m(*nll);
-        //m.migrad();
-        //thisNll = nll->getVal();
-        //plot(Form("plots/fTest/%s_cat%d_g%d_rv",proc.c_str(),cat,order),mass_,mass,dataRV,pdf);
+	pdf->fitTo(*BinDataRV,SumW2Error(true),Range(115,135)); //set initial parameters for chi2 fit
+ 
+	RooChi2Var chi2Var("chi2","chi2",*pdf,*BinDataRV,DataError(RooAbsData::SumW2),Range(115,135)) ;
+		RooMinuit m(chi2Var) ; // chi2fit -- not necessary but improves because this is a one shot fit
+		m.migrad();
+		m.hesse();
+		RooFitResult* r_chi2_wgt = m.save() ;
+
         pdf->plotOn(plotsRV[proc][cat],LineColor(colors[order-1]));
-        chi2 = 2.*(prevNll-thisNll);
+        thisChi2 = chi2Var.getVal();
+        chi2 = (prevChi2-thisChi2);
         //if (chi2<0. && order>1) chi2=0.;
         int diffInDof = (2*order+(order-1))-(2*prev_order+(prev_order-1));
         prob = TMath::Prob(chi2,diffInDof);
-        cout << "\t RV: " << cat << " " << order << " " << diffInDof << " " << prevNll << " " << thisNll << " " << myNll << " " << chi2 << " " << prob << endl;
-        prevNll=thisNll;
+        cout << "\t RV: "<<proc<<" " << cat << " " << order << " " << diffInDof << " |" << prevChi2 << " " << thisChi2 << "| " << " " << chi2 << " " << prob << endl;
+        prevChi2=thisChi2;
         cache_order=prev_order;
         prev_order=order;
         order++;
-      }
+      } // end loop over possible orders
+      // } prob <0.8
       rvChoice=cache_order;
       
       // wrong vertex
       order=1;
       prev_order=0;
       cache_order=0;
-      thisNll=0.;
-      prevNll=1.e6;
+      thisChi2=0.;
+      prevChi2=1.e6;
       chi2=0.;
       prob=0.;
 
       dataWV->plotOn(plotsWV[proc][cat]);
-      while (order<4) {
-      //while (prob<0.8) {
+      while (prob<0.8 ) {
+      //while (order<4) {
+	if(order>5 || dataWV->numEntries()==0) break;
         RooAddPdf *pdf = buildSumOfGaussians(Form("cat%d_g%d",cat,order),mass,MH,order);
-        RooFitResult *fitRes = pdf->fitTo(*dataWV,Save(true),SumW2Error(true));//,Range(mass_-10,mass_+10));
-        double myNll=0.;
-        thisNll = fitRes->minNll();
-        //double myNll = getMyNLL(mass,pdf,dataRV);
-        //thisNll = getMyNLL(mass,pdf,dataRV);
-        //RooAbsReal *nll = pdf->createNLL(*dataWV);
-        //RooMinuit m(*nll);
-        //m.migrad();
-        //thisNll = nll->getVal();
-        //plot(Form("plots/fTest/%s_cat%d_g%d_wv",proc.c_str(),cat,order),mass_,mass,dataWV,pdf);
+	pdf->fitTo(*BinDataWV,SumW2Error(true),Range(115,135));
+	RooChi2Var chi2Var("chi2","chi2",*pdf,*BinDataWV,DataError(RooAbsData::SumW2),Range(115,135)) ;
+		RooMinuit m(chi2Var) ;
+		m.migrad();
+		m.hesse();
+		RooFitResult* r_chi2_wgt = m.save() ;
+
         pdf->plotOn(plotsWV[proc][cat],LineColor(colors[order-1]));
-        chi2 = 2.*(prevNll-thisNll);
+	thisChi2=chi2Var.getVal();
+	chi2=prevChi2-thisChi2;
         //if (chi2<0. && order>1) chi2=0.;
         int diffInDof = (2*order+(order-1))-(2*prev_order+(prev_order-1));
         prob = TMath::Prob(chi2,diffInDof);
-        cout << "\t WV: " << cat << " " << order << " " << diffInDof << " " << prevNll << " " << thisNll << " " << myNll << " " << chi2 << " " << prob << endl;
-        prevNll=thisNll;
+        cout << "\t WV: " << cat << " " << order << " " << diffInDof << " " << prevChi2 << " " << thisChi2 <<  " " << chi2 << " " << prob << endl;
+        prevChi2=thisChi2;
         cache_order=prev_order;
         prev_order=order;
         order++;
-      }
+	// } PROB <0.8
+      } //loop on order
       wvChoice=cache_order;
 
       choices.insert(pair<string,pair<int,int> >(Form("%s_cat%d",proc.c_str(),cat),make_pair(rvChoice,wvChoice)));
-    } 
-  }
+    } //end loop cat
+  }// end loop proc
 
   TLegend *leg = new TLegend(0.6,0.6,0.89,0.89);
   leg->SetFillColor(0);
@@ -296,6 +326,7 @@ int main(int argc, char *argv[]){
       plot->Draw();
       leg->Draw();
       canv->Print(Form("plots/fTest/rv_%s_cat%d.pdf",proc.c_str(),cat));
+      canv->Print(Form("plots/fTest/rv_%s_cat%d.png",proc.c_str(),cat));
     }
   }
   for (map<string,vector<RooPlot*> >::iterator plotIt=plotsWV.begin(); plotIt!=plotsWV.end(); plotIt++){
@@ -305,13 +336,23 @@ int main(int argc, char *argv[]){
       plot->Draw();
       leg->Draw();
       canv->Print(Form("plots/fTest/wv_%s_cat%d.pdf",proc.c_str(),cat));
+      canv->Print(Form("plots/fTest/wv_%s_cat%d.png",proc.c_str(),cat));
     }
   }
   delete canv;
 
   cout << "Recommended options" << endl;
+	ofstream out;
+	out.open(datfilename_.c_str());
+	out<< "# proc cat nGausRV nGausWV"<<endl;
   for (map<string,pair<int,int> >::iterator it=choices.begin(); it!=choices.end(); it++){
     cout << "\t " << it->first << " - " << it->second.first << " " << it->second.second << endl; 
+	size_t n=it->first.find("_");
+	string proc= it->first.substr(0,n);
+	string cat= it->first.substr(n+1,string::npos);
+	n=cat.find("cat");
+	if(n!=string::npos)cat.erase(n,3);
+    out << proc<<" "<<cat <<" " <<it->second.first <<" " <<it->second.second<<endl;
   }
 
   inFile->Close();
