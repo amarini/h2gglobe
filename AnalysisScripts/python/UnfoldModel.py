@@ -41,7 +41,7 @@ class UnfoldModel( PhysicsModel ):
 		
 	def getYieldScale(self,bin,process):
 		if self.debug>1:print "Yield bin=",bin,"process=",process
-		if "Bin" in process: return 1
+		if "Bin" in process: return "r_"+process
 		elif "bkg_mass" in process: return 1
 		else: return "r"
 
