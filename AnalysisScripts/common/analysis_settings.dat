@@ -145,3 +145,7 @@ splitwzh=1
 datacardTreeMass=125
 
 scaleClusterShapes=0
+
+#JER default on.
+applyJer=1
+jerShift=0.

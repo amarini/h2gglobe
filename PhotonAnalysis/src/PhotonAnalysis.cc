@@ -2121,7 +2121,7 @@ void PhotonAnalysis::postProcessJets(LoopAll & l, int vtx)
 	    if( emulateJetResponse && l.itype[l.current] != 0 ) {
 		jetHandler_->emulateJetResponse(ijet);
 	    }
-	    if( applyJer ) {
+	    if( applyJer  && l.itype[l.current] != 0 ) {
 		jetHandler_->applyJerUncertainty(ijet, jerShift);
 	    }
 	    if( applyJecUnc ) {
