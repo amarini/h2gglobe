@@ -325,7 +325,7 @@ int cur_type = l.itype[l.current];
 //--- exit if not needed
 if (cur_type >= 0) return r;
 bool isToBook=false;
-for(int i=0 ;i<sigPointsToBook.size();i++) if(sigPointsToBook[i]==l.normalizer()->GetMass(cur_type) ) isToBook=true;
+for(int i=0 ;i<sigPointsToBook.size();i++) if(int(sigPointsToBook[i])==int(l.normalizer()->GetMass(cur_type) )) isToBook=true;
 
 if(!isToBook) return r;
 //-----
@@ -335,6 +335,8 @@ int bin=computeGenBin(l,cur_type,g1,g2);
 
 if (bin>0 && doUnfoldHisto && g1>0 && g2>0 ){
 	float HiggsPt= ( *((TLorentzVector*)l.gp_p4->At(g1)) + *((TLorentzVector*)l.gp_p4->At(g2)) ).Pt();
+	// VERY VERBOSE
+	cout<<" Going to Fill: << Bin:"<<bin<<" mass:"<<l.normalizer()->GetMass(cur_type)<<" weight:"<<(float)l.sampleContainer[l.current_sample_index].weight() * PtReweight(HiggsPt,cur_type) <<endl;
 	l.rooContainer->InputDataPoint(Form("sig_gen_Bin%d_mass_m%d",bin,l.normalizer()->GetMass(cur_type) ), 0 ,l.normalizer()->GetMass(cur_type) , (float)l.sampleContainer[l.current_sample_index].weight() * PtReweight(HiggsPt,cur_type) );
 	}
 //implementation of gen level histograms
