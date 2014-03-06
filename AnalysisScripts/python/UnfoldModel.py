@@ -8,7 +8,7 @@ class UnfoldModel( PhysicsModel ):
 		PhysicsModel.__init__(self)
 		self.Range=[0.,4]
 		self.nBin=4
-		self.debug=0
+		self.debug=1
 
 	def setPhysicsOptions(self,physOptions):
 		if self.debug>0:print "Setting PhysicsModel Options"
@@ -42,6 +42,7 @@ class UnfoldModel( PhysicsModel ):
 	def getYieldScale(self,bin,process):
 		if self.debug>1:print "Yield bin=",bin,"process=",process
 		if not self.DC.isSignal[process]: return 1
+		if process == "Bin%d"%(self.nBin-1): return 1 ## fixed
 		if "Bin" in process: return "r_"+process
 		elif "bkg_mass" in process: return 1
 		else: return "r"
