@@ -73,6 +73,16 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 		}
 	}
 	//l.rooContainer->verbosity_=false;
+    // Make more datasets representing Systematic Shifts of various quantities
+    for(size_t isig=0; isig<sigPointsToBook.size(); ++isig) {
+        int sig = sigPointsToBook[isig];
+	if( ! sigProcessesToBook.empty() ) {
+		for(int iBin=0;iBin<= nVarCategories;iBin++){
+		   // sig_Bin%d_mass_m%d
+		l.rooContainer->MakeSystematics("CMS_hgg_mass",Form("sig_Bin%s_mass_m%d",iproc->c_str(),sig),-1);
+	    }//end loop sigProcess
+	}//end if sigProcessEmpty
+    }//end for sigPointsToBook
 }
 
 
