@@ -79,7 +79,7 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 	if( ! sigProcessesToBook.empty() ) {
 		for(int iBin=0;iBin<= nVarCategories;iBin++){
 		   // sig_Bin%d_mass_m%d
-		l.rooContainer->MakeSystematics("CMS_hgg_mass",Form("sig_Bin%s_mass_m%d",iproc->c_str(),sig),-1);
+		l.rooContainer->MakeSystematics("CMS_hgg_mass",Form("sig_Bin%d_mass_m%d",iBin,sig),-1);
 	    }//end loop sigProcess
 	}//end if sigProcessEmpty
     }//end for sigPointsToBook
