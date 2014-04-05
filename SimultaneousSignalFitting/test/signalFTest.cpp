@@ -8,6 +8,7 @@
 #include "TTree.h"
 #include "TMath.h"
 #include "TCanvas.h"
+#include "TLatex.h"
 #include "TH1F.h"
 #include "TLegend.h"
 
@@ -93,6 +94,99 @@ for(int i=0;i<nentries;i++)
 //*dh=RooDataHist(dh->GetName(), dh->GetTitle(), dh->GetSometihng, hist)
 
 return;
+}
+
+pair<double,int> ComputeChi2(RooDataHist *dh, RooAbsPdf *pdf, RooRealVar *v,string name=""){
+	dh->Print();
+//RooRealVar *v=new RooRealVar("CMS_hgg_mass","CMS_hgg_mass",125);
+//RooRealVar *m=new RooRealVar("MH","MH",mass_);
+TH1D *h=(TH1D*)dh->createHistogram("CMS_hgg_mass"); //one every 0.5GeV
+TH1D *he=(TH1D*) h->Clone("errors");
+TH1D *p=(TH1D*)h->Clone("pdf");
+int nentries = h->GetNbinsX();
+double ntot=0;
+double ntot_pdf=0;
+double chi2=0;
+int ndof=0;
+double min_error=10e6;
+double max_error=0;
+int Npoints=11;
+for(int i=1;i<=nentries;i++)
+	{
+	double c=h->GetBinContent(i);
+	double e=h->GetBinError(i);
+	if (min_error > e && e > 0 &&  c > 1/20*h->GetMaximum() ) min_error=e;
+	if (max_error < e ) max_error=e;
+	double binCenter = h->GetBinCenter(i);
+	double binWidth = h->GetBinWidth(i);
+	if( binCenter < mass_-10) continue;
+	if( binCenter > mass_+10) continue; //normalization range
+	for(int k=0;k<Npoints;k++){
+		double min=binCenter-binWidth/2.0;
+		double max=binCenter+binWidth/2.0;
+		double newCenter=min+(max-min)/Npoints*(k+0.5);
+		double newWidth=binWidth/Npoints;
+		v->setVal(newCenter);
+		double f=pdf->getVal() * newWidth; //substitute with integral
+		ntot_pdf+=f;	
+	}
+	//compute prediction
+	ntot+=c;
+	}
+ndof --; //ntot normalization
+//double binCenter = data->get(i)->getRealValue("CMS_hgg_mass");
+for(int i=1;i<=nentries;i++)
+	{
+	double e=h->GetBinError(i);
+	//e=TMath::Max(min_error,e); //remove 0 errors
+	e=TMath::Max(max_error,e); //use max error everywhere
+	he->SetBinError(i,e);
+	double c=h->GetBinContent(i);
+	if( c< 1e-6) continue; // avoid huge amount of empty bins
+	double binCenter = h->GetBinCenter(i);
+	double binWidth = h->GetBinWidth(i);
+	if( binCenter < mass_-10) continue;
+	if( binCenter > mass_+10) continue; //normalization range
+	ndof++;
+	//compute prediction
+	//v->setVal(binCenter);
+	double f=0;
+	for(int k=0;k<Npoints;k++){
+		double min=binCenter-binWidth/2.0;
+		double max=binCenter+binWidth/2.0;
+		double newCenter=min + (max-min)/Npoints*(k+0.5) ;
+		double newWidth=binWidth/Npoints;
+		v->setVal(newCenter);
+		f += pdf->getVal() * newWidth * ntot/ntot_pdf; //substitute with integral made of npoints
+	}
+	//double f=pdf->getVal() * binWidth * ntot/ntot_pdf; //substitute with integral
+	chi2 +=  TMath::Power( (f-c)/e , 2 ) ;  // don't look to very high differences >20s per bin
+	//printf("partial chi2=%lf chi2=%lf: c=%lf f=%lf e=%lf\n",TMath::Power( (f-c)/e , 2 ),chi2,c,f,e);
+	p->SetBinContent(i,f);
+	}
+
+if(name !=""){
+	TCanvas *c=new TCanvas("c","c");
+	h->SetMarkerStyle(20);
+	h->SetMarkerSize(0.5);
+	h->Draw("P E");
+	he->SetFillColor(kYellow);
+	he->Draw("P E2");
+	h->Draw("P E SAME ");
+	p->SetLineColor(kRed);
+	p->SetLineWidth(2);
+	p->SetLineStyle(kDashed);
+	p->Draw("HIST SAME");
+	TLatex *lat=new TLatex();
+	lat->SetNDC();
+	lat->SetTextFont(62);
+	lat->SetTextSize(0.04);
+	lat->SetTextAlign(22);
+	lat->DrawLatex(0.65,.65,Form("#chi^{2}=%.3lf nDoF=%d",chi2,ndof));
+	c->Update();
+	c->SaveAs(name.c_str());
+}
+return pair<double,int>(chi2,ndof);
 }
 
 RooAddPdf *buildSumOfGaussians(string name, RooRealVar *mass, RooRealVar *MH, int nGaussians){
@@ -243,33 +337,41 @@ int main(int argc, char *argv[]){
       int prev_order=0;
       int cache_order=0;
       double thisChi2=0.;
-      double prevChi2=1.e6;
+      double prevChi2=1.e10;
       double chi2=0.;
       double prob=0.;
+      double f=0;
+      int dof=1;
 
       dataRV->plotOn(plotsRV[proc][cat]);
       //BinDataRV->plotOn(plotsRV[proc][cat],MarkerColor(kRed),MarkerSize(0.2),LineColor(kRed));
-      while (prob<0.8 ) {       
+      while (prob<0.8 || prevChi2/dof > 10. ) {       
 	//while (order<5) {
 	if(order>5 ) break;
 	if(dataRV->numEntries()==0) { order=2; cache_order=1 ;break;}
         RooAddPdf *pdf = buildSumOfGaussians(Form("cat%d_g%d",cat,order),mass,MH,order);
-	pdf->fitTo(*BinDataRV,SumW2Error(true),Range(115,135)); //set initial parameters for chi2 fit
-	pdf->chi2FitTo(*BinDataRV,SumW2Error(true),Range(115,135)); //set initial parameters for chi2 fit
+	pdf->fitTo(*BinDataRV,SumW2Error(true),Range(mass_-10,mass_+10)); //set initial parameters for chi2 fit
+	//pdf->chi2FitTo(*BinDataRV,SumW2Error(true),Range(mass_-10,mass_+10)); //set initial parameters for chi2 fit
+	pdf->fitTo(*BinDataRV,SumW2Error(true)); //set initial parameters for chi2 fit
  
-	RooChi2Var chi2Var("chi2","chi2",*pdf,*BinDataRV,DataError(RooAbsData::SumW2),Range(115,135)) ;
+	//RooChi2Var chi2Var("chi2","chi2",*pdf,*BinDataRV,DataError(RooAbsData::SumW2),Range(mass_-10,mass_+10)) ;
 		//RooMinuit m(chi2Var) ; // chi2fit -- not necessary but improves because this is a one shot fit
 		//m.migrad();
 		//m.hesse();
 		//RooFitResult* r_chi2_wgt = m.save() ;
 
-        pdf->plotOn(plotsRV[proc][cat],LineColor(colors[order-1]));
-        thisChi2 = chi2Var.getVal();
-        chi2 = (prevChi2-thisChi2);
         //if (chi2<0. && order>1) chi2=0.;
+        //thisChi2 = chi2Var.getVal();
+        pdf->plotOn(plotsRV[proc][cat],LineColor(colors[order-1]));
+	pair<double,int> tmp=ComputeChi2(BinDataRV,pdf,mass,Form("plots/fTest/Canvas_RV_%s_Cat%d_order%d.pdf",proc.c_str(),cat,order));
+	thisChi2 = tmp.first;
+        chi2 = (prevChi2-thisChi2);
         int diffInDof = (2*order+(order-1))-(2*prev_order+(prev_order-1));
-        prob = TMath::Prob(chi2,diffInDof);
-        cout << "\t RV: "<<proc<<" " << cat << " " << order << " " << diffInDof << " |" << prevChi2 << " " << thisChi2 << "| " << " " << chi2 << " " << prob << endl;
+	dof=tmp.second;  //1 is for normalization
+	f=chi2/ diffInDof / thisChi2 /(dof-(2*prev_order+(prev_order-1)));
+	prob =1- TMath::FDistI(f,diffInDof,dof-(2*prev_order+(prev_order-1))); //significance
+        //prob = TMath::Prob(chi2,diffInDof);
+        cout << "\t RV: "<<proc<<" cat" << cat << " order" << order << " diffDoF" << diffInDof << " |" << prevChi2 << " - " << thisChi2 << "| " << " diffChi2 " << chi2 << " f:" << " "<<f<<" prob "<<prob << endl;
         prevChi2=thisChi2;
         cache_order=prev_order;
         prev_order=order;
@@ -283,32 +385,41 @@ int main(int argc, char *argv[]){
       prev_order=0;
       cache_order=0;
       thisChi2=0.;
-      prevChi2=1.e6;
+      prevChi2=1.e10;
       chi2=0.;
       prob=0.;
+      dof=10.;
 
       dataWV->plotOn(plotsWV[proc][cat]);
       //BinDataWV->plotOn(plotsWV[proc][cat],MarkerColor(kRed),MarkerSize(0.2),LineColor(kRed));
-      while (prob<0.8 ) {
+      while (prob<0.8 || prevChi2/dof>10.) {
       //while (order<4) {
 	if(order>5 ) break;
 	if(dataWV->numEntries()==0) { order=2; cache_order=1 ;break;}
 
         RooAddPdf *pdf = buildSumOfGaussians(Form("cat%d_g%d",cat,order),mass,MH,order);
-	pdf->fitTo(*BinDataWV,SumW2Error(true),Range(115,135));
-	pdf->chi2FitTo(*BinDataWV,SumW2Error(true),Range(115,135));
-	RooChi2Var chi2Var("chi2","chi2",*pdf,*BinDataWV,DataError(RooAbsData::SumW2),Range(115,135)) ;
+	pdf->fitTo(*BinDataWV,SumW2Error(true),Range(mass_-10,mass_+10));
+	pdf->fitTo(*BinDataWV,SumW2Error(true));
+	//pdf->chi2FitTo(*BinDataWV,SumW2Error(true),Range(mass_-10,mass_+10));
+	//RooChi2Var chi2Var("chi2","chi2",*pdf,*BinDataWV,Range(mass_-10,mass_+10)) ;
+	//	pdf->fitTo(*BinDataWV,SumW2Error(true));
 	//	RooMinuit m(chi2Var) ;
 	//	m.migrad();
 	//	m.hesse();
 	//	RooFitResult* r_chi2_wgt = m.save() ;
 
         pdf->plotOn(plotsWV[proc][cat],LineColor(colors[order-1]));
-	thisChi2=chi2Var.getVal();
-	chi2=prevChi2-thisChi2;
-        //if (chi2<0. && order>1) chi2=0.;
+	pair<double,int> tmp=ComputeChi2(BinDataWV,pdf,mass);
+	thisChi2 = tmp.first;
+        chi2 = (prevChi2-thisChi2);
         int diffInDof = (2*order+(order-1))-(2*prev_order+(prev_order-1));
-        prob = TMath::Prob(chi2,diffInDof);
+	dof=tmp.second;  //1 is for normalization
+	f=chi2/ diffInDof / thisChi2 /(dof-(2*prev_order+(prev_order-1)));
+	prob = 1 - TMath::FDistI(f,diffInDof,dof-(2*prev_order+(prev_order-1))); //significance
+	//thisChi2=chi2Var.getVal();
+	//chi2=prevChi2-thisChi2;
+        //if (chi2<0. && order>1) chi2=0.;
+        //prob = TMath::Prob(chi2,diffInDof);
         cout << "\t WV: " << cat << " " << order << " " << diffInDof << " " << prevChi2 << " " << thisChi2 <<  " " << chi2 << " " << prob << endl;
         prevChi2=thisChi2;
         cache_order=prev_order;
