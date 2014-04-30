@@ -81,6 +81,15 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 		l.rooContainer->MakeSystematics("CMS_hgg_mass",Form("sig_Bin%d_mass_m%d",iBin,sig),-1);
 	    }//end loop sigProcess
     }//end for sigPointsToBook
+
+    //TODO: use rooContainer to implement this -- for now I hope a TFile is opened
+    TNamed *n=new TNamed("VarDef",VarDef.c_str());
+    n->Write();
+    string boundaries="";
+    for(int i=0;i<varCatBoundaries.size();i++)
+	    boundaries += Form(",%.1f",varCatBoundaries[i]);
+    TNamed *n2=new TNamed("varCatBoundaries",boundaries.c_str());
+    n2->Write();
 }
 
 
@@ -101,6 +110,10 @@ if (doUnfoldHisto)
 	{
 	bin= computeGenBin(l,cur_type)	;
 	if ( bin<0 ) bin=nVarCategories;
+	
+	//all 
+	l.rooContainer->InputDataPoint(Form("sig_Bin%d_mass_m%.0f",bin,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
+	//rv and wv
 	if(isCorrectVertex)l.rooContainer->InputDataPoint(Form("sig_Bin%d_mass_m%.0f_rv",bin,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
 	else l.rooContainer->InputDataPoint(Form("sig_Bin%d_mass_m%.0f_wv",bin,l.normalizer()->GetMass(cur_type) ),category, mass ,weight);
 	}//end doUnfoldHisto
