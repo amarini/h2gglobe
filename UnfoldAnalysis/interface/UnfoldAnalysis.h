@@ -67,8 +67,8 @@ float JetEtaForDiffAnalysis;
 //vector<float> varCatBoundaries;//=0.,20.,35.,60.,130.,400.;
 //----------
 
-int computeGenBin(LoopAll &l,int cur_type,int &ig1,int &ig2) const ;
-int computeGenBin(LoopAll &l,int cur_type) const 
+int computeGenBin(LoopAll &l,int cur_type,int &ig1,int &ig2) ;
+int computeGenBin(LoopAll &l,int cur_type) 
 	{int ig1,ig2;return computeGenBin(l,cur_type,ig1,ig2);} ;
 
 protected:
