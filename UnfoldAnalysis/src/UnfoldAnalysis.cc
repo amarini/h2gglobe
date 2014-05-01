@@ -82,14 +82,14 @@ void UnfoldAnalysis::bookSignalModel(LoopAll& l, Int_t nDataBins)
 	    }//end loop sigProcess
     }//end for sigPointsToBook
 
-    //TODO: use rooContainer to implement this -- for now I hope a TFile is opened
-    TNamed *n=new TNamed("VarDef",VarDef.c_str());
-    n->Write();
+    //I use TH1F instead of TNamed, so they know how to merge files and so on
+    TH1F *n=new TNamed("VarDef",VarDef.c_str(),1,0,1);
+    l.rooContainer->AppendTH1F("VarDef",n);
     string boundaries="";
     for(int i=0;i<varCatBoundaries.size();i++)
 	    boundaries += Form(",%.1f",varCatBoundaries[i]);
-    TNamed *n2=new TNamed("varCatBoundaries",boundaries.c_str());
-    n2->Write();
+    TH1F *n2=new TNamed("varCatBoundaries",boundaries.c_str(),1,0,1);
+    l.rooContainer->AppendTH1F("varCatBoundaries",n2);
 }
 
 
