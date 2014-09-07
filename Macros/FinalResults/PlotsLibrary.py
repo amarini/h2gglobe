@@ -140,7 +140,7 @@ def getInterpolation(x=[1,2,3],y=[1,2,3],type='min',value=0.5):
 
 
 
-def getMu(nBins=6,dir="jobs",File="UnfoldScanExp",sigma=1,Interpolate=True):
+def getMu(nBins=6,dir="jobs",File="UnfoldScanExp",sigma=1,Interpolate=False):
 	Mu=[]
 	Graphs=[] ## keep them otherwise destroyed too soon
 	print "Going to Scan Bins"
@@ -190,8 +190,8 @@ def getMu(nBins=6,dir="jobs",File="UnfoldScanExp",sigma=1,Interpolate=True):
 					   xI=None # this will raise an exception in interpolation
 					   yI=None
 					#print "i=",i,"xI=",xI,"yI=",yI
-			print "Min: xI=",xI ##DEBUG
-			print "Min: yI=",yI ##DEBUG
+			#print "Min: xI=",xI ##DEBUG
+			#print "Min: yI=",yI ##DEBUG
 			#print "--- min ---"
 			try:
 				(x,y)=getInterpolation(xI,yI,'min')
@@ -215,8 +215,8 @@ def getMu(nBins=6,dir="jobs",File="UnfoldScanExp",sigma=1,Interpolate=True):
 					   Ifailed=False
 					except:
 					   Ifailed=True
-			print "E1: xI=",xI ##DEBUG
-			print "E1: yI=",yI ##DEBUG
+			#print "E1: xI=",xI ##DEBUG
+			#print "E1: yI=",yI ##DEBUG
 			if Ifailed:
 				print "->Interpolation failed"
 			Ifailed=False
@@ -231,14 +231,14 @@ def getMu(nBins=6,dir="jobs",File="UnfoldScanExp",sigma=1,Interpolate=True):
 					   Ifailed=False
 					except:
 					   Ifailed=True
-			print "E2: xI=",xI ##DEBUG
-			print "E2: yI=",yI ##DEBUG
+			#print "E2: xI=",xI ##DEBUG
+			#print "E2: yI=",yI ##DEBUG
 
 			if Ifailed:
 				print "->Interpolation failed"
 				return getMu(nBins,dir,File,sigma,Interpolate=False)
 
-		print "I -> (",x,",",y," - ",e1,",",e2,")" ##DEBUG
+		#print "I -> (",x,",",y," - ",e1,",",e2,")" ##DEBUG
 		
 		#######
 		Mu.append( (x,e1,e2) )
