@@ -109,11 +109,23 @@ C2=ROOT.TCanvas("c2","c2")
 if options.unblind:(Mu,Graphs) = getMu(nBins_,dir_,'UnfoldScan')
 else: (Mu,Graphs) = getMu(nBins_,dir_,'UnfoldScanExp')
 
+try: 	MuU=getMu(nBins_,dir_,"UnfoldScan%s"%ExpStr,1)[0]
+except: MuU=None
+try:	MuUS=getMu(nBins_,dir_,"UnfoldScanStat%s"%ExpStr,1)[0]
+except: MuUS=None
+try:	MuR=getMu(nBins_,dir_,"RecoScan%s"%ExpStr,1)[0]
+except: MuR=None
+try:	MuRS=getMu(nBins_,dir_,"RecoScanStat%s"%ExpStr,1)[0]
+except: MuRS=None
+
+
 ROOT.gStyle.SetErrorX(0)
 ROOT.gStyle.SetOptStat(0)
 H=ROOT.TH1F("data","Data",nBins_,histBins);
 HErr=ROOT.TH1F("error","Error",nBins_,histBins);
 HExp=ROOT.TH1F("Expected","Expected",nBins_,histBins);
+HBbB=ROOT.TH1F("BbB","BbB",nBins_,histBins);
+HErrBbB=ROOT.TH1F("BbBerror","Error BbB",nBins_,histBins);
 
 max_h=-1
 min_h=0
@@ -130,6 +142,16 @@ for iBin in range(0,nBins_):
 	HErr.SetBinContent(iBin+1, (low+high)/2)
 	HErr.SetBinError(iBin+1,math.fabs(low-high)/2)
 	H.SetBinContent(iBin+1,xSecPerBin[iBin]/H.GetBinWidth(iBin+1) * Mu[iBin][0] )
+
+	try:
+		l_b=xSecPerBin[iBin]/H.GetBinWidth(iBin+1) *MuR[iBin][1]
+		h_b=xSecPerBin[iBin]/H.GetBinWidth(iBin+1) *MuR[iBin][2]
+		HBbB.SetBinContent(iBin+1,xSecPerBin[iBin]/H.GetBinWidth(iBin+1) * MuR[iBin][0]);
+		HErrBbB.SetBinContent(iBin+1,  (l_b+h_b)/2.);
+		HErrBbB.SetBinError  (iBin+1, math.fabs(l_b-h_b)/2.);
+		print "Doing Also BinByBin"
+	except: 
+		print "No BinByBin"
 
 	max_h=max(max_h,high)
 	max_h=max(max_h,low)
@@ -201,6 +223,8 @@ f.cd()
 H.Write()
 HExp.Write()
 HErr.Write()
+HErrBbB.Write()
+HBbB.Write()
 if options.split:
 	for p in procs:
 		HSplit[p].Write()
@@ -210,14 +234,6 @@ f.Close()
 
 C3=ROOT.TCanvas("c3","c3",800,800)
 
-try: 	MuU=getMu(nBins_,dir_,"UnfoldScan%s"%ExpStr,1)[0]
-except: MuU=None
-try:	MuUS=getMu(nBins_,dir_,"UnfoldScanStat%s"%ExpStr,1)[0]
-except: MuUS=None
-try:	MuR=getMu(nBins_,dir_,"RecoScan%s"%ExpStr,1)[0]
-except: MuR=None
-try:	MuRS=getMu(nBins_,dir_,"RecoScanStat%s"%ExpStr,1)[0]
-except: MuRS=None
 
 
 max_mu=3
@@ -289,6 +305,23 @@ print >>MuFile,"%%\\hline"
 if MuUS:
    for iBin in range(0,nBins_):
 	print>>MuFile, "%%%%Bin%d"%iBin,"& $",MuUS[iBin][0], "$ & $", MuUS[iBin][0]-MuUS[iBin][1],"$ & $",MuUS[iBin][2] - MuUS[iBin][0],"$ \\\\"
+print >>MuFile,"%%\\hline"
+print >>MuFile,"%%\\end{tabular}"
+if options.unblind:	print >>MuFile,"%%%%\\caption{Observed signal-strength stat-only for %s.}"%(options.var)
+else:			print >>MuFile,"%%%%\\caption{Expected signal-strength stat-only for %s.}"%(options.var)
+print >>MuFile,"%%\\end{table}"
+
+print >>MuFile
+
+print >>MuFile,"%%%%%%%%%%%%%%% RECO %%%%%%%%%%%%%%%%%%"
+print >>MuFile,"%%\\centering"
+print >>MuFile,"%%\\begin{tabular}{|c|c|c|c|}"
+print >>MuFile,"%%\\hline"
+print >>MuFile,"%%\\textbf{Bin Number} & \\textbf{$\\mu$} & \\textbf{Negative error} & \\textbf{positive error} \\\\"
+print >>MuFile,"%%\\hline"
+if MuR:
+   for iBin in range(0,nBins_):
+	print>>MuFile, "%%%%Bin%d"%iBin,"& $",MuR[iBin][0], "$ & $", MuR[iBin][0]-MuR[iBin][1],"$ & $",MuR[iBin][2] - MuR[iBin][0],"$ \\\\"
 print >>MuFile,"%%\\hline"
 print >>MuFile,"%%\\end{tabular}"
 if options.unblind:	print >>MuFile,"%%%%\\caption{Observed signal-strength stat-only for %s.}"%(options.var)
