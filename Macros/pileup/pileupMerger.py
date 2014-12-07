@@ -24,7 +24,8 @@ if len(args) != 1:
 options.inDir = args[0]
 options.inDirName = p.basename(options.inDir)
 options.inDirBase = p.dirname(options.inDir)
-options.eosLs = "/afs/cern.ch/project/eos/installation/pro/bin/eos root://eoscms ls /eos/cms"
+#options.eosLs = "/afs/cern.ch/project/eos/installation/pro/bin/eos root://eoscms ls /eos/cms"
+options.eosLs = "/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select root://eoscms ls /eos/cms"
 
 if not options.inDirName:
     raise RuntimeError("Empty target directory name (which defines the sample name). Check path.")

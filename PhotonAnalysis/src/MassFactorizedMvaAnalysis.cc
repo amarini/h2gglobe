@@ -439,8 +439,9 @@ void MassFactorizedMvaAnalysis::Init(LoopAll& l)
     }
     if( doJerSyst ) {
 	assert( doJecSyst );
-	jecSmearer = new JetEnergySmearer(&l, jetHandler_, false);
-	jecSmearer->jerOrJec(false);
+	jerSmearer = new JetEnergySmearer(&l, jetHandler_, false);
+	jerSmearer->jerOrJec(false);
+	jerSmearer->name("JER");
 
 	photonSmearers_.push_back(jerSmearer);
 	systPhotonSmearers_.push_back(jerSmearer);
