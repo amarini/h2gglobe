@@ -27,12 +27,12 @@ typ=0   ind=0 draw=1   Nam=Data tot=1 red=1 lum=1.0e10   xsec=1. kfac=1.0   scal
 #typ=-1 ind=1 draw=1 Nam=vbf_m115_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/VBF_HToGG_M-115_8TeV-powheg-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v1 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 #typ=-1 ind=1 draw=1 Nam=wzh_m115_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/WH_ZH_HToGG_M-115_8TeV-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v2 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 
-# 120 #
+### # 120 #
 typ=-1 ind=1 draw=1 Nam=ggh_m120_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/GluGluToHToGG_M-120_8TeV-powheg-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v1 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 typ=-1 ind=1 draw=1 Nam=tth_m120_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/TTH_HToGG_M-120_8TeV-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v2 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 typ=-1 ind=1 draw=1 Nam=vbf_m120_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/VBF_HToGG_M-120_8TeV-powheg-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v1 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 typ=-1 ind=1 draw=1 Nam=wzh_m120_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/WH_ZH_HToGG_M-120_8TeV-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v2 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
-
+### 
 # 125 #
 # high stat
 typ=-1 ind=1 draw=1 Nam=ggh_m125_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding_HighStat/GluGluToHToGG_M-125_StdMaterial red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
@@ -42,7 +42,7 @@ typ=-1 ind=1 draw=1 Nam=tth_m125_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduc
 typ=-1 ind=1 draw=1 Nam=vbf_m125_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/VBF_HToGG_M-125_8TeV-powheg-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v1 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 typ=-1 ind=1 draw=1 Nam=wzh_m125_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/WH_ZH_HToGG_M-125_8TeV-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v2 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 
-# 130 #
+### # 130 #
 typ=-1 ind=1 draw=1 Nam=ggh_m130_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/GluGluToHToGG_M-130_8TeV-powheg-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v1 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 typ=-1 ind=1 draw=1 Nam=tth_m130_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/TTH_HToGG_M-130_8TeV-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v2 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 typ=-1 ind=1 draw=1 Nam=vbf_m130_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/VBF_HToGG_M-130_8TeV-powheg-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v2 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
@@ -71,6 +71,17 @@ typ=-1 ind=1 draw=1 Nam=wzh_m130_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduc
 #typ=-1 ind=1 draw=1 Nam=tth_m150_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/TTH_HToGG_M-150_8TeV-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v2 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 #typ=-1 ind=1 draw=1 Nam=vbf_m150_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/VBF_HToGG_M-150_8TeV-powheg-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v1 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
 #typ=-1 ind=1 draw=1 Nam=wzh_m150_8TeV CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_v1/mc/Unfolding/WH_ZH_HToGG_M-150_8TeV-pythia6_Summer12_DR53X-PU_RD1_START53_V7N-v2 red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
+#
+#
+#######################
+###### UPS ############
+#######################
+##typ=-1 ind=1 draw=1 Nam=ggh_m131_8TeV_TuneD6UEOFF CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_UPS_v1/mc/Unfolding/meridian-GluGlu_HToGG_M-125_8TeV-powheg-pythia6-TuneD6TUEOFF-PU_S10_START53_V7A red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
+##typ=-1 ind=1 draw=1 Nam=ggh_m132_8TeV_TuneP0UEOFF CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_UPS_v1/mc/Unfolding/meridian-GluGlu_HToGG_M-125_8TeV-powheg-pythia6-TuneP0UEOFF-PU_S10_START53_V7A     red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
+##typ=-1 ind=1 draw=1 Nam=ggh_m133_8TeV_TuneProPT0UEOFF CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_UPS_v1/mc/Unfolding/meridian-GluGlu_HToGG_M-125_8TeV-powheg-pythia6-TuneProPT0UEOFF-PU_S10_START53_V7A red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
+##typ=-1 ind=1 draw=1 Nam=ggh_m134_8TeV_TuneProQ20UEOFF CaDir=/store/group/phys_higgs/cmshgg/reduced/fullMC_noPreselection_UPS_v1/mc/Unfolding/meridian-GluGlu_HToGG_M-125_8TeV-powheg-pythia6-TuneProQ20UEOFF-PU_S10_START53_V7A red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
+##typ=-1 ind=1 draw=1 Nam=ggh_m135_8TeV_TuneD6 CaDir= red=0 lum=1000000.0   xsec=-1.0   kfac=1.000000   scal=1.000000
+
 
 #
 # Branches to use
@@ -95,5 +106,7 @@ treevariables massfac_mva_binned/fullmvatrees.dat massfac_mva_binned/treevariabl
 ##
 ## analyzer PhotonAnalysis photonanalysis.dat
 #analyzer MassFactorizedMvaAnalysis photonanalysis.dat analysis_settings.dat massfactorizedmvaanalysis.dat differentialanalysis/differentialnalysis.dat saveDatacardTrees_=0  dumpAscii=1 dumpMcAscii=0 doFullMvaFinalTree=1 fillOptTree=1
-analyzer UnfoldAnalysis photonanalysis.dat analysis_settings.dat massfactorizedmvaanalysis.dat diffanalysis/differentialnalysis.dat saveDatacardTrees_=0  dumpAscii=1 dumpMcAscii=0 doFullMvaFinalTree=1 fillOptTree=1   diffanalysis/unfolding.dat diffanalysis/vars/%(var)s.dat
+#doJerSyst=1 doSystematics=1
+analyzer UnfoldAnalysis photonanalysis.dat analysis_settings.dat massfactorizedmvaanalysis.dat diffanalysis/differentialnalysis.dat saveDatacardTrees_=0  dumpAscii=1 dumpMcAscii=0 doFullMvaFinalTree=1 fillOptTree=1 diffanalysis/unfolding.dat diffanalysis/vars/%(var)s.dat 
+#sigPointsToBook=131,132,133,134,135
 

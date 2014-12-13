@@ -4352,9 +4352,10 @@ bool PhotonAnalysis::FillDijetVariables(int & ijet1, int & ijet2, LoopAll& l, in
     return filled;
 }
 
-int PhotonAnalysis::computeJetVariablesForDifferentialAnalysis(int & ijet1, int & ijet2, LoopAll& l, int diphoton_id, float* smeared_pho_energy,     bool * jetid_flags, bool getAngles, double JetPtForDiffAnalysis,double JetEtaForDiffAnalysis){
+int PhotonAnalysis::computeJetVariablesForDifferentialAnalysis(int & ijet1, int & ijet2, LoopAll& l, int diphoton_id, float* smeared_pho_energy,     bool * jetid_flags, bool getAngles, double JetPtForDiffAnalysis,double JetEtaForDiffAnalysis,double &tauCjet, TLorentzVector &diphoton){
 
     int Njets = 0;
+    tauCjet=0;
     
     if(diphoton_id==-1) return -1;
 
@@ -4388,7 +4389,9 @@ int PhotonAnalysis::computeJetVariablesForDifferentialAnalysis(int & ijet1, int 
             if(myjet->DeltaR(lead_p4) < dr2pho) continue;
             if(myjet->DeltaR(sublead_p4) < dr2pho) continue;
             if(PADEBUG) cout << "JetPtForDiffAnalysis ijet="<<i<<" pt="<< myjet->Pt()<<" jetid_flags[i]="<<jetid_flags[i]<<endl;
+
             Njets++;
+            tauCjet=TMath::Max( tauCjet, myjet->Pt() / (2*TMath::CosH(diphoton.Rapidity()-myjet->Rapidity())) ) ;
             if (myjet->Pt()>jptmax){
                 ijet2 = ijet1;
                 jptsecond = jptmax;

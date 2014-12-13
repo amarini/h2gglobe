@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #VARS=pToMscaled
-#VARS="dPhi dRapidityHiggsJet dEtajj dEtajjExtended dRapidityHiggsJetExtended Zepp ZeppExtended Ygg CosThetaStar LeadJetpT Mjj Njets dPhijj dPhiggjj dPhiggjjExtended dPhijjExtended"
+#VARS="pToMscaled dPhi dRapidityHiggsJet Njets dEtajjExtended dRapidityHiggsJet ZeppExtended Ygg CosThetaStar LeadJetpT MjjExtended dPhiggjjExtended dPhijjExtended"
 #VARS="pToMscaled dPhi dRapidityHiggsJet dEtajj dEtajjExtended dRapidityHiggsJetExtended Zepp ZeppExtended Ygg CosThetaStar LeadJetpT Mjj Njets dPhijj dPhiggjj dPhiggjjExtended dPhijjExtended"
 #VARS="dRapidityHiggsJet dRapidityHiggsJetExtended"
 #VARS="pToMscaled"
 #VARS="dPhi"
-VARS="pToMscaled dRapidityHiggsJet dEtajj dEtajjExtended dRapidityHiggsJetExtended Zepp ZeppExtended"
+#VARS="pToMscaled dRapidityHiggsJet dEtajj dEtajjExtended dRapidityHiggsJetExtended Zepp ZeppExtended"
 #VARS="Ygg CosThetaStar LeadJetpT Mjj dPhijj dPhiggjj dPhiggjjExtended dPhijjExtended"
 
 #amarini
@@ -18,5 +18,11 @@ VARS="pToMscaled dRapidityHiggsJet dEtajj dEtajjExtended dRapidityHiggsJetExtend
 
 #matteo
 #VARS="CosThetaStar CosThetaStarMerged LeadJetpT 
+#JER
+#VARS="Njets LeadJetpT MjjExtended"
+#VARS="Njets"
 
-LABEL=diffanalysis_v17
+#Tau
+VARS="tauCjet"
+
+LABEL=diffanalysis_v20

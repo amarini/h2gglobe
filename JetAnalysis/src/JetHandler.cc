@@ -305,6 +305,12 @@ void JetHandler::applyJerUncertainty(int ijet, float shift)
     double eta = p4->Eta();
     double ptCor = p4->Pt();
     double genPt = l_.jet_algoPF1_genPt[ijet];
+    double dr    = l_.jet_algoPF1_genDr[ijet];
+
+    if (( dr > 0.5 )  || ( genPt < 20) || ( ptCor < 20) )  // do nothing in this case
+        {
+        return;
+        }
 
     std::vector<double>::iterator bound =  std::lower_bound( jerEtaBins_.begin(), jerEtaBins_.end(), fabs(eta) );
     int bin = ( bound == jerEtaBins_.begin() ) ? 0 : (bound - jerEtaBins_.begin() - 1);

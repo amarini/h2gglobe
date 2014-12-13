@@ -30,7 +30,9 @@ wait
 #### MVA ####
 for VAR in $VARS ; do
 
-./mk_fitter.py -i diffanalysis/datafiles_differentialanalysis_massfacmva.dat -n 50 -v ${VAR} --onlySig  -l ${LABEL} -o ${USER}_${LABEL}_${VAR}_Sig  &
+echo "NOT CREATING SIG"
+#./mk_fitter.py -i diffanalysis/datafiles_differentialanalysis_massfacmva.dat -n 35 -v ${VAR} --onlySig  -l ${LABEL} -o ${USER}_${LABEL}_${VAR}_Sig  &
+#echo "NOT CREATING SYST"
 ./mk_fitter.py -i diffanalysis/datafiles_differentialanalysis_massfacmva_systs.dat -n 30 -v ${VAR} --onlySig  -l Syst_${LABEL} -o ${USER}_${LABEL}_${VAR}_Syst  &
 echo "NOT CREATING DATA"
 #./mk_fitter.py -i diffanalysis/datafiles_differentialanalysis_massfacmva.dat -n 50 -v ${VAR} --onlyData -l ${LABEL} -o ${USER}_${LABEL}_${VAR}_Data  &

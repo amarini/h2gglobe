@@ -317,7 +317,8 @@ int UnfoldAnalysis::computeGenBin(LoopAll &l,int cur_type,int &ig1,int &ig2){
 
 //jets
 	float Ht=0;
-	int nJets=0;
+	int nJets=0;	
+	float tauCjet=0;
 	map<float,int,std::greater<float> > jets;
 
 	for(int iJet=0 ;iJet<l.genjet_algo1_n;iJet++)
@@ -330,8 +331,10 @@ int UnfoldAnalysis::computeGenBin(LoopAll &l,int cur_type,int &ig1,int &ig2){
 	
 		//GEN JET is good
 		float pt=((TLorentzVector*)l.genjet_algo1_p4->At(iJet))->Pt();
+		float y=((TLorentzVector*) l.genjet_algo1_p4->At(iJet))->Rapidity();
 		Ht+=pt;
 		nJets+=1;
+		tauCjet= TMath::Max(tauCjet, pt / ( 2.* TMath::CosH( Hgg.Rapidity() - y))   );
 		jets[ pt ] = iJet;
 	}
 
@@ -370,6 +373,10 @@ int UnfoldAnalysis::computeGenBin(LoopAll &l,int cur_type,int &ig1,int &ig2){
 			last_bin = is_jet_ooa;
 			return is_jet_ooa; // avoid actually the comparison between var (float) and int values
 			}
+	}
+	else if ( VarDef == "tauCjet")
+	{
+		var = tauCjet;
 	}
 	else if (VarDef == "dPhijj")
 	{

@@ -544,7 +544,10 @@ def writeMultiDimFit(method=None,wsOnly=False):
                 break
             mypath = os.path.dirname(mypath)
         if opts.profileMH:
-            profMH = "--PO higgsMassRange=122,128"
+	     if opts.mhLow==None or opts.mhHigh==None:
+            	profMH = "--PO higgsMassRange=122,128"
+	     else :
+            	profMH = "--PO higgsMassRange=%6.2f,%6.2f"%(opts.mhLow,opts.mhHigh)
         else:
             profMH = "--PO mass=%f"%opts.mh
         catsMap = opts.catsMap
@@ -678,6 +681,8 @@ def writeMultiDimFit(method=None,wsOnly=False):
 		out_datacard=os.path.abspath(opts.datacard).replace('.txt',method+'.root')
 		if opts.freezeAll:
 			out_datacard=os.path.abspath(opts.datacard).replace('.txt',method+'Stat.root')
+		if not opts.profileMH:
+			out_datacard = out_datacard.replace('.root','mh%.2f.root'%opts.mh )
 		exec_line = 'text2workspace.py %s -o %s %s'%(in_datacard,out_datacard,ws_args[method]) 
 		print exec_line
 		if opts.postFit:
@@ -734,6 +739,8 @@ def writeMultiDimFit(method=None,wsOnly=False):
 			opts.datacard = opts.datacard.replace('.txt',method+'Stat.root')
 		else:
 			opts.datacard = opts.datacard.replace('.txt',method+'.root')
+		if not opts.profileMH:
+			opts.datacard = opts.datacard.replace('.root','mh%.2f.root'%opts.mh )
         
             
             
@@ -866,7 +873,7 @@ def configure(config_line):
 		opts.nBins=tmp_nbins
         if opts.postFitAll: opts.postFit = True
 	if opts.wspace : opts.skipWorkspace=True
-	if "-P" in opts.poix and (opts.muLow!=None or opts.muHigh!=None): sys.exit("Cannot specify muLow/muHigh with >1 POI. Remove the muLow/muHigh option and add use --setPhysicsModelParameterRanges in opts keyword") 
+	if "-P" in opts.poix and (opts.muLow!=None or opts.muHigh!=None) and 'RDiffXsScan' not in opts.method and 'RBinScan' not in opts.method: sys.exit("Cannot specify muLow/muHigh with >1 POI. Remove the muLow/muHigh option and add use --setPhysicsModelParameterRanges in opts keyword") 
 	if opts.verbose: print opts
 	run()
 

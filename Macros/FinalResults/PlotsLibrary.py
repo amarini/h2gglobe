@@ -79,6 +79,46 @@ def cleanSpikes1D(rfix):
    rkeep.append(r)
  return rkeep
 
+#from makeCombinePlots Palette
+def set_palette(ncontours=999):
+    style=1
+    if (style==1):
+     # default palette, looks cool
+     stops = [0.00, 0.34, 0.61, 0.84, 1.00]
+     red   = [0.00, 0.00, 0.77, 0.85, 0.90]
+     green = [0.00, 0.81, 1.00, 0.20, 0.00]
+     blue  = [0.51, 1.00, 0.12, 0.00, 0.00]
+
+     st = array.array('d', stops)
+     re = array.array('d', red)
+     gr = array.array('d', green)
+     bl = array.array('d', blue)
+    elif (style==3):
+     
+     red   = [ 0.00, 0.90, 1.00] 
+     blue  = [ 1.00, 0.50, 0.00] 
+     green = [ 0.00, 0.00, 0.00] 
+     stops = [ 0.00, 0.50, 1.00] 
+     st = array.array('d', stops)
+     re = array.array('d', red)
+     gr = array.array('d', green)
+     bl = array.array('d', blue)
+
+    elif (style==2):
+     # blue palette, looks cool
+     stops = [0.00, 0.14, 0.34, 0.61, 0.84, 1.00]
+     red   = [0.00, 0.00, 0.00, 0.05, 0.30, 1.00]
+     green = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
+     blue  = [1.00, 0.80, 0.6, 0.4, 0.2, 0.0]
+
+     st = array.array('d', stops)
+     re = array.array('d', red)
+     gr = array.array('d', green)
+     bl = array.array('d', blue)
+
+    npoints = len(st)
+    ROOT.TColor.CreateGradientColorTable(npoints, st, re, gr, bl, ncontours)
+    ROOT.gStyle.SetNumberContours(ncontours)
 
 def findPath():
 	#figure out globe name
@@ -140,13 +180,19 @@ def getInterpolation(x=[1,2,3],y=[1,2,3],type='min',value=0.5):
 
 
 
-def getMu(nBins=6,dir="jobs",File="UnfoldScanExp",sigma=1,Interpolate=False):
+def getMu(nBins=6,dir="jobs",File="UnfoldScanExp",sigma=1,Interpolate=False,mh=-1):
+	''' Get Mu for Differential. Mh is considered for mh scans only if >0'''
 	Mu=[]
 	Graphs=[] ## keep them otherwise destroyed too soon
 	print "Going to Scan Bins"
 	for iBin in range(0,nBins):
-		print "Going to open","%s/%sBin%d/%sBin%d.root"%(dir,File,iBin,File,iBin)
-		f=ROOT.TFile.Open("%s/%sBin%d/%sBin%d.root"%(dir,File,iBin,File,iBin))
+		if mh> 0:
+			mhStr=("%.2f"%mh).replace('.','_')
+			print "Going to open","%s/%sBin%d_mh%s/%sBin%d_mh%s.root"%(dir,File,iBin,mhStr,File,iBin,mhStr)
+			f=ROOT.TFile.Open("%s/%sBin%d_mh%s/%sBin%d_mh%s.root"%(dir,File,iBin,mhStr,File,iBin,mhStr))
+		else:
+			print "Going to open","%s/%sBin%d/%sBin%d.root"%(dir,File,iBin,File,iBin)
+			f=ROOT.TFile.Open("%s/%sBin%d/%sBin%d.root"%(dir,File,iBin,File,iBin))
 		t=f.Get("limit")
 		A=ROOT.entry()
 		t.SetBranchAddress("r_Bin%d"%iBin,ROOT.AddressOf(A,'var'))
@@ -323,8 +369,12 @@ def DrawNLL(dir="jobs",nBins=6,File="UnfoldScanExp"):
 def GetXsecSplines():
 	#load LoopAll -> Normalization
 	(mypath,globe_name)=findPath()
-	print "Loading Globe: ",mypath+"/"+"/"+"libLoopAll.so"
-	ROOT.gSystem.Load(mypath+"/"+"libLoopAll.so")
+
+	try:
+		l=ROOT.LoopAll()
+	except:
+		print "Loading Globe: ",mypath+"/"+"/"+"libLoopAll.so"
+		ROOT.gSystem.Load(mypath+"/"+"libLoopAll.so")
 	
 	#didn't found a more elegant way
 	ROOT.gROOT.ProcessLine("struct array { \
@@ -374,3 +424,156 @@ def GetXsec(ws,mh,nBins,Lumi,extra=""):
 
 	   Xsec.append( xsGraphs["tot"].Eval(mh,xsSpline)*1000. * brGraph.Eval(mh,brSpline) * eaGraph.Eval(mh,eaSpline))
 	return Xsec
+
+
+def plot2DNLL(infile,ws,xvar="MH",yvar="r_Bin0",xtitle="M_{H}",ytitle="#sigma",Lumi=19.7):
+  ''' This macro is taken from makeCombinePlots, and implement the xSec mult:
+  	ws is the sig ws
+  	infile is the combine output
+  '''
+  
+  canv = ROOT.TCanvas("%s_%s"%(xvar,yvar),"%s_%s"%(xvar,yvar),750,750)
+  BFgrs		= []
+  CONT1grs	= []
+  CONT2grs 	= []
+  COLgrs	= []
+  
+  leg = ROOT.TLegend(0.7,0.7,0.88,0.88)
+  #else: leg = ROOT.TLegend(float(options.legend.split(',')[0]),float(options.legend.split(',')[1]),float(options.legend.split(',')[2]),float(options.legend.split(',')[3]))
+  #leg.SetFillColor(10)
+
+  smmarker = ROOT.TMarker(1,1,33)
+  smmarker.SetMarkerColor(97)
+  smmarker.SetMarkerSize(2.5)
+  smmarker2 = ROOT.TMarker(1,1,33)
+  smmarker2.SetMarkerColor(89)
+  smmarker2.SetMarkerSize(1.4)
+  smmarker_leg = smmarker.Clone("smmarker_leg")
+  #smmarker_leg.SetMarkerStyle(27)
+  smmarker_leg.SetMarkerSize(2.5)
+
+  addBFtoLeg = False
+
+  mems = []
+  th2s = []
+
+  tf = ROOT.TFile(infile)
+  mems.append(tf)
+  tree = tf.Get('limit')
+
+  ROOT.gROOT.ProcessLine("struct limEntry {\
+		  float mh ; \
+		  float mu ; \
+		  float z; \
+		  };" )
+  from ROOT import limEntry
+
+  E=ROOT.limEntry()
+  #print "Check E:mh ",E.mh
+  #print "Check E:mu ",E.mu
+  #print "Check E:z ",E.z
+  tree.SetBranchAddress( xvar, ROOT.AddressOf(E,"mh") );
+  tree.SetBranchAddress( yvar, ROOT.AddressOf(E,"mu") );
+  tree.SetBranchAddress( "deltaNLL",ROOT .AddressOf(E,"z") ) ;
+
+  xmin=123.5
+  xmax=125.5
+  ymin=10
+  ymax=50
+
+  th2= ROOT.TH2D("xSecVsMH","#sigma vs M_{H}",500,xmin,xmax,500,ymin,ymax)
+  tg2= ROOT.TGraph2D() ## th2 is too sparse
+  tg2_unique_point={}
+
+  th2.GetXaxis().SetTitle(xtitle)
+  th2.GetYaxis().SetTitle(ytitle)
+  th2.GetZaxis().SetTitle("2#DeltaNLL")
+
+  gBF = ROOT.TGraph()
+
+  mytree={} ## vs mh
+
+  for iEntry in range (0, tree.GetEntries() ) :
+  	tree.GetEntry(iEntry)
+	if E.z<0 : continue;
+	if E.mh not in mytree: mytree[E.mh]=[]
+	mytree[E.mh].append( (E.mu,E.z *2)  )   # 2DeltaNLL
+
+  for E.mh in mytree:
+    xsBare=GetXsec(ws,E.mh,1,Lumi,extra="")[0] 
+    for (E.mu,E.z) in mytree[E.mh]:
+	# set best fit
+	xs=xsBare*E.mu
+	if E.z== 0:
+		gBF.SetPoint(0, E.mh,xs);
+	# set th2d
+	th2bin=th2.FindBin(E.mh,xs)
+	#print " BIN ASSIGNMENT:",th2bin," mh=",E.mh,"xs=",xs,"mu=",E.mu
+	if th2.GetBinContent(th2bin) > 0 and th2.GetBinError(th2bin) > 0: 
+		if abs( th2.GetBinContent(th2bin) - E.z )>0.01  and not (E.mh<xmax or E.mh> xmax) and not (xs<ymin or xs>ymax): 
+			print "[WARNING]: content is already set for bin (",E.mh,",",xs,"-",E.mu,") and differs:",th2.GetBinContent(th2bin)," != ", E.z 
+		continue
+
+	th2.SetBinContent(th2bin, E.z)
+	th2.SetBinError(th2bin, 1)
+	#if  (E.mh<xmin or E.mh> xmax) or (xs<ymin or xs>ymax) : continue
+	if (E.mh,xs) not in tg2_unique_point:
+		tg2_unique_point[ (E.mh,xs) ] = 1
+		tg2.SetPoint(tg2.GetN(), E.mh, xs, E.z )
+
+  #propagate back to th2
+  print "INTERPOLATION",tg2.GetN()
+
+  ## CHECK
+  for i in range(0,tg2.GetN() ):
+  	print "x=", tg2.GetX()[i] ,"y=",tg2.GetY()[i],"z=",tg2.GetZ()[i]
+  print "INTERPOLATE CHECK:",tg2.Interpolate( 124.8, 32.)
+
+
+  for xBin in range(0,th2.GetXaxis().GetNbins() ):
+    for yBin in range(0,th2.GetYaxis().GetNbins() ):
+	    x=th2.GetXaxis().GetBinCenter(xBin+1) 
+	    y=th2.GetYaxis().GetBinCenter(yBin+1) 
+	    #print "(%.1f,%.1f,%.1f)"%(x,y,tg2.Interpolate(x,y) ) 
+	    th2.SetBinContent(xBin+1,yBin+1,  tg2.Interpolate( x,y) ) ;
+  print
+
+  cont_1sig = th2.Clone('cont_1_sig')
+  cont_1sig.SetContour(2)
+  cont_1sig.SetContourLevel(1,2.3)
+  cont_1sig.SetLineColor( ROOT.kBlack)
+  cont_1sig.SetLineWidth(3)
+  cont_1sig.SetLineStyle(1)
+
+  cont_2sig = th2.Clone('cont_2_sig')
+  cont_2sig.SetContour(2)
+  cont_2sig.SetContourLevel(1,6.18)
+  cont_2sig.SetLineColor( ROOT.kBlack)
+  cont_2sig.SetLineWidth(3)
+  cont_2sig.SetLineStyle(2)
+
+  gBF.SetMarkerStyle(34)
+  gBF.SetMarkerSize(2.0)
+  gBF.SetMarkerColor(ROOT.kBlack)
+  gBF.SetLineColor( ROOT.kBlack)
+
+  ROOT.gStyle.SetOptStat(0)
+
+  set_palette(ncontours=255);
+  ### DRAW ######
+  th2.Draw("colz")
+  th2.GetXaxis().SetRangeUser(123.5,125.3)
+  th2.GetYaxis().SetRangeUser(18,42)
+
+  gBF_underlay = gBF.Clone()
+  gBF_underlay.SetMarkerColor(ROOT.kWhite)
+  gBF_underlay.SetMarkerSize(2.5)
+  gBF_underlay.Draw("P same")
+  gBF.Draw("P same")
+
+  cont_1sig.Draw("cont3 same")
+  cont_2sig.Draw("cont3 same")
+
+  canv.Print("xSecVsMH_col.pdf")
+  canv.Print("xSecVsMH_col.png")
+  canv.Print("xSecVsMH_col.root")

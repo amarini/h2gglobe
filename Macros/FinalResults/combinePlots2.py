@@ -27,9 +27,13 @@ if __name__=="__main__":
 	parser.add_option("-k","--split" ,dest='split',action='store_true',help="Add split info for root files for Nicolas (>v5). Default=%default",default=True)
 	parser.add_option("-K","--nosplit" ,dest='split',action='store_false',help="Dont split info for root files.")
 	parser.add_option("","--unblind" ,dest='unblind',action='store_true',help="Unblind Plots. Default=%default",default=False)
+	parser.add_option("","--postfit" ,dest='postfit',action='store_true',help="Use PostFit Mass. Default=%default",default=False)
+	parser.add_option("","--postfitFile" ,dest='postfitFile',type='string',help="PostFitFile. Default=%default. = cms_hgg_datacard_pToMscaledRDiffXsScan_postFit.root",default='')
 	(options,args)=parser.parse_args()
 	dir_=options.dir
         wsFile_=options.sig
+
+
 
 print "Importing ROOT"
 sys.argv=[]
@@ -48,6 +52,19 @@ from ROOT import histBins;
 import math
 from glob import glob
 
+if options.postfit:
+	fileName=options.postfitFile
+	if fileName=='':
+		fileName='cms_hgg_datacard_%sRDiffXsScan_postFit.root'%options.var
+	print "Opening PostFit File",fileName
+	postROOT=ROOT.TFile.Open(fileName)
+	if postROOT == None: print "file does not exist"
+	tree=postROOT.Get("limit")
+	Entry=ROOT.entry();		
+	tree.SetBranchAddress("MH",ROOT.AddressOf(Entry,'var') ) ;
+	tree.GetEntry(0)
+	mass_=Entry.var
+	print "USING POST-FIT MASS = ",mass_
 
 
 from PlotsLibrary import findPath,getMu,DrawNLL,GetXsec
@@ -96,12 +113,16 @@ f=ROOT.TFile.Open(wsFile_)
 ws=f.Get("cms_hgg_workspace")
 
 xSecPerBin=GetXsec(ws,mass_,nBins_,Lumi)
+xSecPerBin125=GetXsec(ws,125,nBins_,Lumi)
+
 if options.split:
 	xSecSplit={}
+	xSecSplit125={}
 	HSplit={}
 	procs=["ggh","vbf","wh","zh","tth"]
 	for p in procs:
 		xSecSplit[p]=GetXsec(ws,mass_,nBins_,Lumi,"_"+p)
+                xSecSplit125[p]=GetXsec(ws,125,nBins_,Lumi,"_"+p)
 		HSplit[p]=ROOT.TH1F("HExp_"+p,"HExpected "+p,nBins_,histBins)
 
 C2=ROOT.TCanvas("c2","c2")
@@ -126,6 +147,7 @@ HErr=ROOT.TH1F("error","Error",nBins_,histBins);
 HExp=ROOT.TH1F("Expected","Expected",nBins_,histBins);
 HBbB=ROOT.TH1F("BbB","BbB",nBins_,histBins);
 HErrBbB=ROOT.TH1F("BbBerror","Error BbB",nBins_,histBins);
+
 
 max_h=-1
 min_h=0
@@ -218,6 +240,7 @@ H.Draw("P SAME")
 C2.SaveAs("xSec_"+dir_.replace("/","")+".pdf")
 C2.SaveAs("xSec_"+dir_.replace("/","")+".png")
 C2.SaveAs("xSec_"+dir_.replace("/","")+".root") #will be deleted by the next line if split
+
 f=ROOT.TFile("xSec_"+dir_.replace("/","")+".root","UPDATE")
 f.cd()
 H.Write()
@@ -228,6 +251,23 @@ HBbB.Write()
 if options.split:
 	for p in procs:
 		HSplit[p].Write()
+#write mass
+n=ROOT.TNamed("mh","%6.3f"%mass_)
+n.Write()
+# write correction factors
+
+for bin,xsec in enumerate(xSecPerBin):
+	n=ROOT.TNamed("all_mh_over_125_bin%d"%bin, "%f"%(xsec/xSecPerBin125[bin]));
+	n.Write()
+
+if options.split:
+        for p in procs:
+                #xSecSplit[p]=GetXsec(ws,mass_,nBins_,Lumi,"_"+p)
+                #xSecSplit125[p]=GetXsec(ws,125,nBins_,Lumi,"_"+p)
+		for bin,xsec in enumerate(xSecSplit[p]):
+			n=ROOT.TNamed("%s_mh_over_125_bin%d"%(p,bin), "%f"%(xsec/xSecSplit125[p][bin]));
+			n.Write()
+
 f.Close()
 	
 
@@ -314,6 +354,7 @@ print >>MuFile,"%%\\end{table}"
 print >>MuFile
 
 print >>MuFile,"%%%%%%%%%%%%%%% RECO %%%%%%%%%%%%%%%%%%"
+print >>MuFile,"%%\\begin{table}[bp]"
 print >>MuFile,"%%\\centering"
 print >>MuFile,"%%\\begin{tabular}{|c|c|c|c|}"
 print >>MuFile,"%%\\hline"
@@ -329,6 +370,23 @@ else:			print >>MuFile,"%%%%\\caption{Expected signal-strength stat-only for %s.
 print >>MuFile,"%%\\end{table}"
 
 print >>MuFile
+print >>MuFile,"%%%%%%%%%%%%%%% CORRECTIONS 125 %%%%%%%%%%%%%%%%%%"
+print >>MuFile,"%%\\begin{table}[bp]"
+print >>MuFile
+print >>MuFile,"%%\\begin{tabular}{|c|c|c|}"
+print >>MuFile,"%%\\hline"
+print >>MuFile,"%%\\textbf{Bin Number} & proc & correction  \\\\"
+for iBin in range(0,nBins_):
+	print >>MuFile, "%%%% %d & all & %f \\\\"%(iBin,xSecPerBin[iBin]/xSecPerBin125[iBin])
+print >>MuFile,"%%\\hline"
+for iBin in range(0,nBins_):
+        for p in procs:
+		print xSecSplit
+		print >>MuFile, "%%%% %d & %s & %f \\\\"%(iBin,p,xSecSplit[p][iBin]/xSecSplit125[p][iBin])
+print >>MuFile,"%%\\hline"
+print >>MuFile,"%%\\end{tabular}"
+print >>MuFile,"%%\\caption{ Correction factor mh %f-125 for var %s.}"%(mass_,options.var)
+print >>MuFile,"%%\\end{table}"
 #Style
 
 ROOT.gStyle.SetOptStat(0)
