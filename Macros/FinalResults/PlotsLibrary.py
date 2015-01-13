@@ -80,8 +80,15 @@ def cleanSpikes1D(rfix):
  return rkeep
 
 #from makeCombinePlots Palette
-def set_palette(ncontours=999):
-    style=1
+def set_palette(ncontours=999,style=4):
+    ''' Set Palette to a specific style:
+	ncontours = number of gradient points
+	style:
+	\t 1) default palette
+	\t 2) blue palette
+	\t 3) 
+	\t 4) Hgg
+    '''
     if (style==1):
      # default palette, looks cool
      stops = [0.00, 0.34, 0.61, 0.84, 1.00]
@@ -89,20 +96,12 @@ def set_palette(ncontours=999):
      green = [0.00, 0.81, 1.00, 0.20, 0.00]
      blue  = [0.51, 1.00, 0.12, 0.00, 0.00]
 
-     st = array.array('d', stops)
-     re = array.array('d', red)
-     gr = array.array('d', green)
-     bl = array.array('d', blue)
     elif (style==3):
      
      red   = [ 0.00, 0.90, 1.00] 
      blue  = [ 1.00, 0.50, 0.00] 
      green = [ 0.00, 0.00, 0.00] 
      stops = [ 0.00, 0.50, 1.00] 
-     st = array.array('d', stops)
-     re = array.array('d', red)
-     gr = array.array('d', green)
-     bl = array.array('d', blue)
 
     elif (style==2):
      # blue palette, looks cool
@@ -111,10 +110,16 @@ def set_palette(ncontours=999):
      green = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
      blue  = [1.00, 0.80, 0.6, 0.4, 0.2, 0.0]
 
-     st = array.array('d', stops)
-     re = array.array('d', red)
-     gr = array.array('d', green)
-     bl = array.array('d', blue)
+    elif (style==4):
+     stops = [0.00, 1.00]
+     red   = [1.00, 48./255.]
+     green = [1.00, 48./255.]
+     blue  = [1.00, 131./255.]
+    ###############
+    st = array.array('d', stops)
+    re = array.array('d', red)
+    gr = array.array('d', green)
+    bl = array.array('d', blue)
 
     npoints = len(st)
     ROOT.TColor.CreateGradientColorTable(npoints, st, re, gr, bl, ncontours)
@@ -425,14 +430,63 @@ def GetXsec(ws,mh,nBins,Lumi,extra=""):
 	   Xsec.append( xsGraphs["tot"].Eval(mh,xsSpline)*1000. * brGraph.Eval(mh,brSpline) * eaGraph.Eval(mh,eaSpline))
 	return Xsec
 
+# -----------------------------------------------------------------------------------------------------------
 
-def plot2DNLL(infile,ws,xvar="MH",yvar="r_Bin0",xtitle="M_{H}",ytitle="#sigma",Lumi=19.7):
+#sys.path.insert(0,os.getcwd())
+# Pasquale's Macros
+mypath = os.path.dirname(__file__)
+sys.path.insert(0, mypath + '/hgg_legacy_plots/macros/')
+
+from  adjustStyle import makeContours,loadRootStyle,getAllPrims
+# -----------------------------------------------------------------------------------------------------------
+
+def CMS(canv,hist=None):
+  ''' Write CMS and set a bit of style'''
+  canv.SetLeftMargin(.1)  
+  canv.SetRightMargin(.15)  
+  canv.SetBottomMargin(.15)  
+  canv.SetTopMargin(.1)  
+  ## write CMS
+  latex=ROOT.TLatex()
+  latex.SetNDC()
+  latex.SetTextFont(43)
+  latex.SetTextSize(34)
+  latex.SetTextAlign(13)
+  latex.SetTextColor(ROOT.kBlack)
+  latex.DrawLatex(.12,.88,"#bf{CMS}")
+
+  latex.SetTextColor(ROOT.kBlack)
+  latex.SetTextSize(24)
+  latex.SetTextAlign(31)
+  latex.DrawLatex(0.90,.91,"19.7 fb^{-1} (8 TeV)")
+  ##
+  if hist:
+  	hist.GetYaxis().SetTitleOffset(1.2)
+  	hist.GetXaxis().SetTitleOffset(1.2)
+  	hist.GetXaxis().SetNdivisions(504)
+  	hist.GetYaxis().SetNdivisions(504)
+  #Get Palette
+  palette = hist.GetListOfFunctions().FindObject("palette");
+  if palette:
+  	palette.SetX1NDC(0.9);
+  	palette.SetX2NDC(0.95);
+  	palette.SetY1NDC(0.2);
+  	palette.SetY2NDC(0.8);
+  #
+  #Tell ROOT that canvas has been modified
+  canv.Modified();
+  canv.Update();
+
+
+def plot2DNLL(infile,ws,xvar="MH",yvar="r_Bin0",xtitle="M_{H} [GeV]",ytitle="#sigma [fb]",Lumi=19.7):
   ''' This macro is taken from makeCombinePlots, and implement the xSec mult:
   	ws is the sig ws
   	infile is the combine output
   '''
   
-  canv = ROOT.TCanvas("%s_%s"%(xvar,yvar),"%s_%s"%(xvar,yvar),750,750)
+  #from Pasquale
+  #loadRootStyle()
+
   BFgrs		= []
   CONT1grs	= []
   CONT2grs 	= []
@@ -476,12 +530,12 @@ def plot2DNLL(infile,ws,xvar="MH",yvar="r_Bin0",xtitle="M_{H}",ytitle="#sigma",L
   tree.SetBranchAddress( yvar, ROOT.AddressOf(E,"mu") );
   tree.SetBranchAddress( "deltaNLL",ROOT .AddressOf(E,"z") ) ;
 
-  xmin=123.5
-  xmax=125.5
-  ymin=10
-  ymax=50
+  xmin=123.
+  xmax=126.5
+  ymin=5
+  ymax=60
 
-  th2= ROOT.TH2D("xSecVsMH","#sigma vs M_{H}",500,xmin,xmax,500,ymin,ymax)
+  th2= ROOT.TH2D("xSecVsMH","#sigma vs M_{H}",1000,xmin,xmax,1000,ymin,ymax)
   tg2= ROOT.TGraph2D() ## th2 is too sparse
   tg2_unique_point={}
 
@@ -498,6 +552,7 @@ def plot2DNLL(infile,ws,xvar="MH",yvar="r_Bin0",xtitle="M_{H}",ytitle="#sigma",L
 	if E.z<0 : continue;
 	if E.mh not in mytree: mytree[E.mh]=[]
 	mytree[E.mh].append( (E.mu,E.z *2)  )   # 2DeltaNLL
+	#if iEntry >100: break; ## FAST
 
   for E.mh in mytree:
     xsBare=GetXsec(ws,E.mh,1,Lumi,extra="")[0] 
@@ -521,58 +576,127 @@ def plot2DNLL(infile,ws,xvar="MH",yvar="r_Bin0",xtitle="M_{H}",ytitle="#sigma",L
 		tg2_unique_point[ (E.mh,xs) ] = 1
 		tg2.SetPoint(tg2.GetN(), E.mh, xs, E.z )
 
-  #propagate back to th2
   print "INTERPOLATION",tg2.GetN()
-
   ## CHECK
   for i in range(0,tg2.GetN() ):
   	print "x=", tg2.GetX()[i] ,"y=",tg2.GetY()[i],"z=",tg2.GetZ()[i]
   print "INTERPOLATE CHECK:",tg2.Interpolate( 124.8, 32.)
 
+  ### BEGIN NICK INTERPOLATION
+  ### ROOT.gSystem.Load("libHiggsAnalysisCombinedLimit.so");
 
+  ### roo_mh = ROOT.RooRealVar("mh","mh",0.)
+  ### roo_xsec = ROOT.RooRealVar("xsec","xsec",0.)
+  ### roo_dnll = ROOT.RooRealVar("dnll","dnll",0.)
+
+  ### ROOT.gROOT.ProcessLine("struct Entry2 {\
+  ###       	  double mh ; \
+  ###       	  double xsec ; \
+  ###       	  double z; \
+  ###       	  };" )
+  ### from ROOT import Entry2
+  ### E=ROOT.Entry2()
+
+  ### treeInt = ROOT.TTree("mytree","mytree")
+  ### treeInt.Branch( "mh"  , ROOT.AddressOf(E,"mh") ,"mh/D");
+  ### treeInt.Branch( "xsec", ROOT.AddressOf(E,"xsec") ,"xsec/D");
+  ### treeInt.Branch( "dnll", ROOT.AddressOf(E,"z") ,"dnll/D") ;
+
+  ### for i in range(0,tg2.GetN() ) :
+  ###       E.mh=tg2.GetX()[i] 
+  ###       E.mu=tg2.GetY()[i]
+  ###       E.z =tg2.GetZ()[i]
+  ###       treeInt.Fill();
+
+  ### interpolator = ROOT.RooSplineND( "interpolator", "interpolator", ROOT.RooArgList(roo_mh,roo_xsec), treeInt , "dnll",0.2 )
+  ### for xBin in range(0,th2.GetXaxis().GetNbins() ):
+  ###   for yBin in range(0,th2.GetYaxis().GetNbins() ):
+  ###           roo_mh.setVal(th2.GetXaxis().GetBinCenter(xBin+1) )
+  ###           roo_xsec.setVal(th2.GetYaxis().GetBinCenter(yBin+1) )
+  ###           th2.SetBinContent(xBin+1,yBin+1,  interpolator.getVal()  ) ;
+
+  ########### OLD INTERP
   for xBin in range(0,th2.GetXaxis().GetNbins() ):
     for yBin in range(0,th2.GetYaxis().GetNbins() ):
-	    x=th2.GetXaxis().GetBinCenter(xBin+1) 
-	    y=th2.GetYaxis().GetBinCenter(yBin+1) 
-	    #print "(%.1f,%.1f,%.1f)"%(x,y,tg2.Interpolate(x,y) ) 
-	    th2.SetBinContent(xBin+1,yBin+1,  tg2.Interpolate( x,y) ) ;
+            x=th2.GetXaxis().GetBinCenter(xBin+1) 
+            y=th2.GetYaxis().GetBinCenter(yBin+1) 
+            th2.SetBinContent(xBin+1,yBin+1,  tg2.Interpolate( x,y) ) ;
   print
+  ########### OLD INTERP END
 
-  cont_1sig = th2.Clone('cont_1_sig')
-  cont_1sig.SetContour(2)
-  cont_1sig.SetContourLevel(1,2.3)
-  cont_1sig.SetLineColor( ROOT.kBlack)
-  cont_1sig.SetLineWidth(3)
-  cont_1sig.SetLineStyle(1)
+  #cont_1sig.SetContour(2)
+  #cont_1sig.SetContourLevel(1,2.3)
+  #cont_1sig.SetLineColor( ROOT.kBlack)
+  #cont_1sig.SetLineWidth(3)
+  #cont_1sig.SetLineStyle(1)
 
-  cont_2sig = th2.Clone('cont_2_sig')
-  cont_2sig.SetContour(2)
-  cont_2sig.SetContourLevel(1,6.18)
-  cont_2sig.SetLineColor( ROOT.kBlack)
-  cont_2sig.SetLineWidth(3)
-  cont_2sig.SetLineStyle(2)
+  #cont_2sig = th2.Clone('cont_2_sig')
+  #cont_2sig.SetContour(2)
+  #cont_2sig.SetContourLevel(1,6.18)
+  #cont_2sig.SetLineColor( ROOT.kBlack)
+  #cont_2sig.SetLineWidth(3)
+  #cont_2sig.SetLineStyle(2)
+
+  set_palette(ncontours=255);
 
   gBF.SetMarkerStyle(34)
-  gBF.SetMarkerSize(2.0)
+  gBF.SetMarkerSize(1.8)
   gBF.SetMarkerColor(ROOT.kBlack)
   gBF.SetLineColor( ROOT.kBlack)
 
   ROOT.gStyle.SetOptStat(0)
+  ROOT.gStyle.SetOptTitle(0)
 
-  set_palette(ncontours=255);
+
+  #cont_1sig.Draw("cont3,list same")
+  
+  ## NICE CONTOURS -----------------------
+  tmp=ROOT.TCanvas()
+  cont_1sig = th2.Clone('cont_1_sig')
+  cont_1sig.SetContour(2, array.array( 'd', [2.3,6.18 ]) )
+  cont_1sig.Draw("cont,list")
+  tmp.Update()
+  ROOT.gROOT.GetListOfSpecials().Print()
+  contours = ROOT.gROOT.GetListOfSpecials().FindObject("contours")
+  ###   contours is  a TList of contours
+  print "COUNTOURS=",contours
+  clones=[]
+  for ic in range(0,2):
+        cnts= contours.At(ic)
+	print "cnts[",ic,"]",cnts
+  	for idx,c in enumerate(cnts):
+		print "c=",c
+  		if ic==0: 
+			c.SetLineStyle(1)
+			c.SetLineWidth(2)
+  		if ic==1: 
+			c.SetLineStyle(7)
+			c.SetLineWidth(2)
+		if ic>1: continue;
+        	clone= c.Clone("ic_%d_idx_%d"%(ic,idx))
+        	clones.append(clone)
+        	#canv.GetListOfPrimitives().Add(clone)
+  cont_1sig.Delete()
+  ROOT.gROOT.GetListOfSpecials().Delete()
+  ## END CONTOURS ---------------------
   ### DRAW ######
+  canv = ROOT.TCanvas("%s_%s"%(xvar,yvar),"%s_%s"%(xvar,yvar),750,750)
+  canv.cd()
   th2.Draw("colz")
-  th2.GetXaxis().SetRangeUser(123.5,125.3)
-  th2.GetYaxis().SetRangeUser(18,42)
+  th2.GetXaxis().SetRangeUser(123.,125.7)
+  th2.GetYaxis().SetRangeUser(0,60-0.001)
 
   gBF_underlay = gBF.Clone()
-  gBF_underlay.SetMarkerColor(ROOT.kWhite)
-  gBF_underlay.SetMarkerSize(2.5)
+  gBF_underlay.SetMarkerColor(ROOT.kRed)
+  gBF_underlay.SetMarkerSize(2.6)
   gBF_underlay.Draw("P same")
   gBF.Draw("P same")
 
-  cont_1sig.Draw("cont3 same")
-  cont_2sig.Draw("cont3 same")
+  for c in clones : 
+	  print "Drawing", c.GetName()
+	  c.Draw("LSAME")
+
+  CMS(canv,th2)
 
   canv.Print("xSecVsMH_col.pdf")
   canv.Print("xSecVsMH_col.png")
