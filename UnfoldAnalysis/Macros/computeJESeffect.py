@@ -43,7 +43,7 @@ while True: # loop on cat
 
 	Bin+=1
    if nominal == 0 and JESup == 0 and JESdn == 0 : break;	
-   print "CAT %(cat)d nBins=$(nBins)d JESUP = %(jup)f JESDN = %(jdn)f"%{"cat":cat,"nBins":Bin,"jup":JESup/nominal,"jdn":JESdn/nominal}
+   print "CAT %(cat)d nBins=%(nBins)d JESUP = %(jup)f JESDN = %(jdn)f"%{"cat":cat,"nBins":Bin,"jup":JESup/nominal,"jdn":JESdn/nominal}
    Bin=0
    cat+=1
 
